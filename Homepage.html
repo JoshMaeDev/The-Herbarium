@@ -137,9 +137,22 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* Film grain overlay — pointer-events: none lets all clicks pass through */
+  #grain-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.38;
+    mix-blend-mode: overlay;
+  }
 </style>
 </head>
-<body class="bg-background text-on-surface selection:bg-primary-fixed overflow-x-hidden">
+<body class="bg-background text-on-surface selection:bg-primary-fixed overflow-x-hidden" style="background-color: rgb(240, 229, 207) ;">
+<canvas id="grain-overlay" aria-hidden="true"></canvas>
 
 <!-- Top Navigation Bar -->
 <header class="bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant/30 w-full">
@@ -172,7 +185,7 @@
           Curated.
         </h1>
         <p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">
-          Rare specimens, expert care guides, and botanical tools for the thoughtful grower. Each plant is hand-selected and prepared for your home.
+          Rare specimens, expert care guides, and botanical tools for the thoughtful grower. 
         </p>
         <div class="flex gap-4 flex-wrap pt-2">
           <a href="#" class="bg-primary text-on-primary px-8 py-4 rounded-lg font-body-md hover:scale-[1.02] active:scale-95 transition-transform duration-200 inline-block">
@@ -185,58 +198,44 @@
       </div>
 
       <!-- Right: hero image mosaic -->
-      <div class="w-full md:w-1/2 grid grid-cols-2 gap-3">
-        <div class="col-span-2 aspect-[16/7] overflow-hidden rounded-xl">
-          <img class="w-full h-full object-cover plant-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDos76Dfe-sgqAeCEWL7RnWkjEcW9T_m2PpPIHshvA0xJPdGYKgLjy7D23-v3AB9kJcSmVAWamjNQGAFjiyyP0-QkLY8MmSbSyfsn2Da26qCNtVcKffm_4m9Ul3IGlg16xkAegF0W8UaNj3sq14icjpTGaPxA3ocs55WqkqewDYSH2hLTWSK_3_1AslUKU-hK9boenyxTl4xU8sEclXNLnv5lD_usqAUjPT27WzM4QqH72rqRJ96hVHFNGVlC6WUjheCVCpcWYWQVM" alt="Monstera Deliciosa leaf"/>
-        </div>
-        <div class="aspect-square overflow-hidden rounded-xl">
-          <img class="w-full h-full object-cover plant-card-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlmECAfF8DPQdxuqvU1WYNBchQfhhAvQ-kxPkC0OuWJja0pyOA2AWDFntkLq6h32vSsA2vjLjmPXpi-L0vceJ8g04B45dYR4nPVHX-59WnhhMaoBKJbATG6CqxQ_n_SQXpW53IbLD9Q-M9_SmQIcf3slE5KbZbcH5RvNG5G_fqL81GlpimJ50wa0-c2rj3KOz7w0whe23rpZqTDluJMvUaFGJr7vOCwPA4xQTucIgMkljsiOS6QSZUXIns-_u5mD9baxkO2OZpi1Q" alt="Monstera in pot"/>
-        </div>
-        <div class="aspect-square overflow-hidden rounded-xl bg-secondary-container flex items-center justify-center">
-          <div class="text-center p-6">
-            <div class="font-display-accent text-5xl text-primary cursive-accent mb-2">240+</div>
-            <div class="font-label-caps text-label-caps text-on-surface-variant">Rare Specimens<br/>in Stock</div>
-          </div>
-        </div>
-      </div>
+ <!-- Right: hero image mosaic -->
+<div class="w-full md:w-1/2 grid grid-cols-2 gap-3">
 
+  <div class="col-span-2 aspect-[16/7] overflow-hidden rounded-xl relative group">
+    <img class="w-full h-full object-cover plant-card-img" src="/Images/CoffeePlants.jpg" alt="Coffee Plants"/>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-5">
+      <div class="text-white">
+        <p class="font-label-caps text-label-caps opacity-80">Featured</p>
+        <p class="font-headline-md text-headline-md">Coffee Plants</p>
+      </div>
     </div>
+  </div>
+
+  <div class="aspect-square overflow-hidden rounded-xl relative">
+    <img class="w-full h-full object-cover plant-card-img" src="/Images/RoomPlants.jpg" alt="Room Plants"/>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+      <div class="text-white">
+        <p class="font-label-caps text-label-caps opacity-80">Indoor</p>
+        <p class="font-body-md text-body-md font-semibold">Room Plants</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="aspect-square overflow-hidden rounded-xl relative">
+    <img class="w-full h-full object-cover plant-card-img" src="/Images/OutdoorPlants.jpg" alt="Outdoor Plants"/>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+      <div class="text-white">
+        <p class="font-label-caps text-label-caps opacity-80">Outdoors</p>
+        <p class="font-body-md text-body-md font-semibold">Outdoor Plants</p>
+      </div>
+    </div>
+  </div>
+
+</div>
   </section>
 
   <!-- ── Scrolling Category Strip ── -->
-  <div class="overflow-hidden border-y border-outline-variant/20 py-5 my-4 bg-surface-container-low">
-    <div class="marquee-track">
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Tropical Aroids</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Rare Ferns</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Succulents &amp; Cacti</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Climbing Plants</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Air Purifiers</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Low Light Species</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Seasonal Drops</span>
-      <span class="text-primary">✦</span>
-      <!-- duplicate for seamless loop -->
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Tropical Aroids</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Rare Ferns</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Succulents &amp; Cacti</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Climbing Plants</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Air Purifiers</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Low Light Species</span>
-      <span class="text-primary">✦</span>
-      <span class="font-label-caps text-label-caps text-on-surface-variant">Seasonal Drops</span>
-      <span class="text-primary">✦</span>
-    </div>
-  </div>
+
 
   <!-- ── Featured Plants Grid ── -->
   <section class="max-w-7xl mx-auto px-grid-margin py-section-gap-desktop">
@@ -474,6 +473,37 @@
   }, { threshold: 0.15 });
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Film grain
+  (function () {
+    const canvas = document.getElementById('grain-overlay');
+    const ctx = canvas.getContext('2d');
+    let animId;
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function drawGrain() {
+      const w = canvas.width;
+      const h = canvas.height;
+      const imageData = ctx.createImageData(w, h);
+      const data = imageData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        const v = (Math.random() * 255) | 0;
+        data[i]     = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+    }
+
+    window.addEventListener('resize', () => { resize(); drawGrain(); });
+    resize();
+    drawGrain();
+  })();
 </script>
 
 </body>
