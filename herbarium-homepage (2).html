@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-dim": "#d8dad9",
+          "surface-container-low": "#f2f4f2",
+          "on-primary-fixed": "#07200b",
+          "secondary-fixed-dim": "#afceb8",
+          "surface-container-high": "#e6e9e7",
+          "on-primary": "#ffffff",
+          "surface-tint": "#4a654a",
+          "primary": "#4a654a",
+          "background": "#f8faf8",
+          "primary-fixed": "#ccebc8",
+          "outline": "#737971",
+          "surface-container": "#eceeec",
+          "on-secondary-container": "#4d6957",
+          "primary-fixed-dim": "#b0ceae",
+          "on-background": "#191c1b",
+          "inverse-surface": "#2e3130",
+          "secondary": "#496553",
+          "on-error": "#ffffff",
+          "on-secondary-fixed": "#052013",
+          "surface-container-highest": "#e1e3e1",
+          "error": "#ba1a1a",
+          "error-container": "#ffdad6",
+          "inverse-on-surface": "#eff1ef",
+          "on-secondary": "#ffffff",
+          "on-primary-container": "#243d25",
+          "outline-variant": "#c3c8bf",
+          "surface": "#f8faf8",
+          "on-surface": "#191c1b",
+          "on-tertiary-fixed-variant": "#404a3b",
+          "on-surface-variant": "#434841",
+          "on-tertiary": "#ffffff",
+          "primary-container": "#8ba889",
+          "surface-variant": "#e1e3e1",
+          "inverse-primary": "#b0ceae",
+          "tertiary": "#576152",
+          "on-error-container": "#93000a",
+          "on-primary-fixed-variant": "#334d34",
+          "secondary-fixed": "#cbead4",
+          "tertiary-fixed": "#dbe6d2",
+          "on-tertiary-fixed": "#151e12",
+          "on-tertiary-container": "#303a2c",
+          "on-secondary-fixed-variant": "#314d3c",
+          "surface-bright": "#f8faf8",
+          "surface-container-lowest": "#ffffff",
+          "secondary-container": "#c8e7d1",
+          "tertiary-container": "#99a492",
+          "tertiary-fixed-dim": "#bfcab7"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "section-gap-mobile": "64px",
+          "base": "8px",
+          "grid-margin": "40px",
+          "grid-gutter": "24px",
+          "section-gap-desktop": "120px"
+        },
+        "fontFamily": {
+          "body-lg": ["Hanken Grotesk"],
+          "headline-lg": ["Hanken Grotesk"],
+          "label-caps": ["Hanken Grotesk"],
+          "display-accent": ["Playfair Display"],
+          "headline-md": ["Hanken Grotesk"],
+          "body-md": ["Hanken Grotesk"]
+        },
+        "fontSize": {
+          "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+          "headline-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "300"}],
+          "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+          "display-accent": ["48px", {"lineHeight": "1.2", "fontWeight": "400"}],
+          "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+          "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+        }
+      },
+    },
+  }
+</script>
+<style>
+  :root {
+    /* Dark-green palette overrides */
+    --bg:           #ffffff;
+    --surface:      #ffffff;       /* cards, nav */
+    --surface-mid:  #f7f7f8;       /* slightly lighter cards */
+    --surface-high: #f2f2f3;       /* hover state */
+    --border:       rgba(0,0,0,0.08);
+    --text-primary: #000000;       /* main headings */
+    --text-body:    #111827;       /* body copy */
+    --text-muted:   #6b7280;       /* labels / captions */
+    --accent:       #4a654a;       /* green accent */
+    --accent-dim:   #6b8a6b;       /* slightly darker accent for backgrounds */
+    --accent-text:  #ffffff;       /* text ON accent buttons */
+    --pill-bg:      #f3f4f6;
+    --pill-text:    #111827;
+  }
+
+  body { background-color: var(--bg); color: var(--text-primary); }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  }
+  .cursive-accent {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+  }
+  .hero-text-large {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(56px, 8vw, 112px);
+    line-height: 1.0;
+    font-weight: 400;
+    color: var(--text-primary);
+  }
+  .plant-card-img {
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .plant-card:hover .plant-card-img { transform: scale(1.04); }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  .search-bar:focus-within { box-shadow: 0 0 0 2px rgba(126,200,126,0.35); }
+
+  .category-pill { transition: background 0.2s, color 0.2s, transform 0.15s; }
+  .category-pill:hover { transform: translateY(-2px); }
+
+  /* ── Component overrides for dark background ── */
+
+  /* Nav */
+  .nav-bar {
+    background: rgba(255,255,255,0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(6px);
+  }
+  .nav-link       { color: var(--text-body); }
+  .nav-link:hover { color: var(--accent); }
+  .nav-link-active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+  .nav-icon { color: var(--text-primary); }
+  .nav-icon:hover { background: var(--surface-mid); }
+
+  /* Buttons */
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+  .btn-outline:hover { background: var(--surface-mid); }
+
+  /* Cards / surfaces */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .card:hover { background: var(--surface-high); }
+  .card-alt {
+    background: var(--surface-mid);
+    border: 1px solid var(--border);
+  }
+  .card-alt:hover { background: var(--surface-high); }
+
+  /* Section backgrounds */
+  .section-tinted { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+  /* Search bar */
+  .search-input-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .search-input-wrap input { color: var(--text-primary); }
+  .search-input-wrap input::placeholder { color: var(--text-muted); }
+
+  /* Quick-search pills */
+  .q-pill {
+    background: var(--pill-bg);
+    color: var(--pill-text);
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .q-pill:hover { background: var(--accent-dim); color: #fff; transform: translateY(-2px); }
+
+  /* Category grid cards */
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .cat-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(126,200,126,0.12); }
+  .cat-icon-wrap {
+    background: var(--accent-dim);
+    color: #e8f0e8;
+    transition: background 0.2s;
+  }
+  .cat-card:hover .cat-icon-wrap { background: var(--accent); }
+
+  /* Stats */
+  .stat-number { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent); }
+
+  /* Guide cards */
+  .guide-card   { background: var(--surface);     border: 1px solid var(--border); }
+  .guide-card:hover { background: var(--surface-high); }
+  .guide-card-alt { background: var(--surface-mid); border: 1px solid var(--border); }
+  .guide-card-alt:hover { background: var(--surface-high); }
+
+  /* How-it-works step number */
+  .step-num { background: var(--accent); color: var(--accent-text); }
+
+  /* Newsletter section */
+  .newsletter-section { background: var(--surface); }
+  .newsletter-input {
+    background: var(--surface-mid);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+  .newsletter-input::placeholder { color: var(--text-muted); }
+  .newsletter-input:focus { outline: none; box-shadow: 0 0 0 1px var(--accent); border-color: var(--accent); }
+
+  /* Footer */
+  .site-footer { background: var(--surface); border-top: 1px solid var(--border); }
+  .footer-link { color: var(--text-muted); }
+  .footer-link:hover { color: var(--accent); }
+
+  /* Divider */
+  .section-divider { border-color: var(--border); }
+
+  /* Film grain */
+  #grain-overlay {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.28;
+    mix-blend-mode: overlay;
+  }
+
+  /* Quote */
+  .pull-quote { color: var(--accent); }
+  .pull-cite  { color: var(--text-muted); }
+</style>
+</head>
+<body>
+<canvas id="grain-overlay" aria-hidden="true"></canvas>
+
+<!-- ── Navigation ── -->
+<header class="nav-bar sticky top-0 z-50 w-full">
+  <nav class="flex justify-between items-center px-10 py-4 max-w-7xl mx-auto">
+    <div class="cursive-accent text-2xl font-medium" style="color:var(--accent)">The Herbarium</div>
+    <div class="hidden md:flex gap-8 items-center">
+      <a class="nav-link font-medium text-lg transition-colors duration-200" href="#">Explore Plants</a>
+      <a class="nav-link-active font-medium text-lg pb-1 transition-colors duration-200" href="#">Care Guides</a>
+      <a class="nav-link font-medium text-lg transition-colors duration-200" href="#">Our Story</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="nav-icon material-symbols-outlined p-2 rounded-full transition-colors active:scale-95 duration-200">search</button>
+      <a href="#" class="btn-primary hidden md:inline-flex px-5 py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-95 transition-transform duration-200">Sign In</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ── Hero ── -->
+  <section class="max-w-7xl mx-auto px-10 pt-16 md:pt-24 pb-12">
+    <div class="flex flex-col md:flex-row gap-12 items-end">
+
+      <div class="w-full md:w-1/2 space-y-8">
+        <span class="text-xs font-semibold tracking-[0.2em] uppercase" style="color:var(--accent)">Botanical Knowledge Base</span>
+        <h1 class="hero-text-large">
+          Living<br/>
+          <span style="color:var(--accent)" class="cursive-accent">Botany,</span><br/>
+          Curated.
+        </h1>
+        <p class="text-lg leading-7" style="color:var(--text-body)">
+          Look up any plant and learn exactly how to care for it — watering schedules, light needs, soil, and more. Written by botanists, not algorithms.
+        </p>
+        <div class="flex gap-4 flex-wrap pt-2">
+          <a href="#" class="btn-primary px-8 py-4 rounded-lg font-medium hover:scale-[1.02] active:scale-95 transition-transform duration-200 inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">search</span> Search Plants
+          </a>
+          <a href="#" class="btn-outline px-8 py-4 rounded-lg font-medium transition-colors duration-200 inline-block">
+            Browse Guides
+          </a>
+        </div>
+      </div>
+
+      <!-- Image mosaic -->
+      <div class="w-full md:w-1/2 grid grid-cols-2 gap-3">
+        <div class="col-span-2 aspect-[16/7] overflow-hidden rounded-xl relative">
+          <img class="w-full h-full object-cover plant-card-img" src="/Images/CoffeePlants.jpg" alt="Coffee Plants"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-5">
+            <div class="text-white">
+              <p class="text-xs font-semibold tracking-widest uppercase opacity-80">Featured</p>
+              <p class="text-2xl font-medium">Coffee Plants</p>
+            </div>
+          </div>
+        </div>
+        <div class="aspect-square overflow-hidden rounded-xl relative">
+          <img class="w-full h-full object-cover plant-card-img" src="/Images/RoomPlants.jpg" alt="Room Plants"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+            <div class="text-white">
+              <p class="text-xs font-semibold tracking-widest uppercase opacity-80">Indoor</p>
+              <p class="text-base font-semibold">Room Plants</p>
+            </div>
+          </div>
+        </div>
+        <div class="aspect-square overflow-hidden rounded-xl relative">
+          <img class="w-full h-full object-cover plant-card-img" src="/Images/OutdoorPlants.jpg" alt="Outdoor Plants"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+            <div class="text-white">
+              <p class="text-xs font-semibold tracking-widest uppercase opacity-80">Outdoors</p>
+              <p class="text-base font-semibold">Outdoor Plants</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+
+  <!-- ── Browse by Category ── -->
+  <section class="section-tinted py-24">
+    <div class="max-w-7xl mx-auto px-10">
+      <div class="flex justify-between items-end mb-10">
+        <div>
+          <span class="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style="color:var(--accent)">Find Your Plant</span>
+          <h2 class="text-4xl font-light leading-tight" style="color:var(--text-primary)">Browse by <span class="cursive-accent" style="color:var(--accent)">category</span></h2>
+        </div>
+        <a href="#" class="hidden md:flex items-center gap-2 text-base font-medium transition-all duration-200 hover:gap-3" style="color:var(--accent)">
+          All categories <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+
+        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
+          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined">home</span>
+          </div>
+          <span class="text-base font-semibold" style="color:var(--text-primary)">Indoor</span>
+          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">340 species</span>
+        </a>
+
+        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
+          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined">park</span>
+          </div>
+          <span class="text-base font-semibold" style="color:var(--text-primary)">Outdoor</span>
+          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">280 species</span>
+        </a>
+
+        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
+          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined">water_drop</span>
+          </div>
+          <span class="text-base font-semibold" style="color:var(--text-primary)">Low Water</span>
+          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">190 species</span>
+        </a>
+
+        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
+          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined">bedtime</span>
+          </div>
+          <span class="text-base font-semibold" style="color:var(--text-primary)">Low Light</span>
+          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">145 species</span>
+        </a>
+
+        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
+          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined">child_care</span>
+          </div>
+          <span class="text-base font-semibold" style="color:var(--text-primary)">Beginner</span>
+          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">210 species</span>
+        </a>
+
+        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
+          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined">air</span>
+          </div>
+          <span class="text-base font-semibold" style="color:var(--text-primary)">Air Purifying</span>
+          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">95 species</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Stats ── -->
+  <section class="max-w-7xl mx-auto px-10 py-20 fade-up">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <div class="stat-number text-5xl mb-2">1,200+</div>
+        <div class="text-xs font-semibold tracking-widest uppercase" style="color:var(--text-muted)">Plant Species</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl mb-2">400+</div>
+        <div class="text-xs font-semibold tracking-widest uppercase" style="color:var(--text-muted)">Care Guides</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl mb-2">12k</div>
+        <div class="text-xs font-semibold tracking-widest uppercase" style="color:var(--text-muted)">Monthly Readers</div>
+      </div>
+      <div>
+        <div class="stat-number text-5xl mb-2">100%</div>
+        <div class="text-xs font-semibold tracking-widest uppercase" style="color:var(--text-muted)">Free to Use</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pull Quote ── -->
+  <section class="max-w-5xl mx-auto px-10 py-24 text-center section-divider border-t">
+    <blockquote class="space-y-6 fade-up">
+      <p class="pull-quote cursive-accent text-4xl md:text-5xl leading-relaxed">
+        "Plants are the original architecture — every leaf a decision, every stem a solution."
+      </p>
+      <cite class="pull-cite text-xs font-semibold tracking-widest uppercase not-italic block">— The Herbarium Philosophy</cite>
+    </blockquote>
+  </section>
+
+  <!-- ── Care Guides Archive ── -->
+  <section class="max-w-7xl mx-auto px-10 py-24 section-divider border-t">
+    <div class="flex flex-col md:flex-row gap-12 items-center">
+
+      <div class="w-full md:w-5/12 space-y-6 fade-up">
+        <span class="text-xs font-semibold tracking-[0.2em] uppercase" style="color:var(--accent)">The Archive</span>
+        <h2 class="text-4xl font-light leading-tight" style="color:var(--text-primary)">
+          Care guides written with <span class="cursive-accent" style="color:var(--accent)">depth.</span>
+        </h2>
+        <p class="text-lg leading-7" style="color:var(--text-body)">
+          We go beyond "water twice a week." Our botanical guides explore the science, ecology, and philosophy behind each species — because understanding a plant means growing it well.
+        </p>
+        <ul class="space-y-3">
+          <li class="flex gap-3 items-center text-base" style="color:var(--text-body)">
+            <span class="material-symbols-outlined text-base" style="color:var(--accent)">check</span>Species origin &amp; ecology
+          </li>
+          <li class="flex gap-3 items-center text-base" style="color:var(--text-body)">
+            <span class="material-symbols-outlined text-base" style="color:var(--accent)">check</span>Seasonal care calendars
+          </li>
+          <li class="flex gap-3 items-center text-base" style="color:var(--text-body)">
+            <span class="material-symbols-outlined text-base" style="color:var(--accent)">check</span>Propagation &amp; repotting guides
+          </li>
+        </ul>
+        <a href="#" class="inline-flex items-center gap-2 text-base font-semibold hover:gap-3 transition-all duration-200" style="color:var(--accent)">
+          Browse the Archive <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="w-full md:w-7/12 grid grid-cols-2 gap-4">
+
+        <div class="guide-card rounded-xl p-6 space-y-3 cursor-pointer transition-colors duration-200">
+          <span class="material-symbols-outlined text-3xl" style="color:var(--accent)">opacity</span>
+          <h4 class="text-2xl font-medium" style="color:var(--text-primary)">Watering Science</h4>
+          <p class="text-sm text-base" style="color:var(--text-body)">The why behind root rot and how to prevent it for good.</p>
+          <span class="text-xs font-semibold tracking-widest uppercase" style="color:var(--accent)">READ GUIDE →</span>
+        </div>
+
+        <div class="guide-card-alt rounded-xl p-6 space-y-3 cursor-pointer transition-colors duration-200">
+          <span class="material-symbols-outlined text-3xl" style="color:var(--accent)">light_mode</span>
+          <h4 class="text-2xl font-medium" style="color:var(--text-primary)">Light Mastery</h4>
+          <p class="text-sm" style="color:var(--text-body)">Reading your home's light and matching the right plant.</p>
+          <span class="text-xs font-semibold tracking-widest uppercase" style="color:var(--accent)">READ GUIDE →</span>
+        </div>
+
+        <div class="guide-card-alt rounded-xl p-6 space-y-3 cursor-pointer transition-colors duration-200">
+          <span class="material-symbols-outlined text-3xl" style="color:var(--accent)">grass</span>
+          <h4 class="text-2xl font-medium" style="color:var(--text-primary)">Soil &amp; Substrate</h4>
+          <p class="text-sm" style="color:var(--text-body)">Build the perfect mix for any species from scratch.</p>
+          <span class="text-xs font-semibold tracking-widest uppercase" style="color:var(--accent)">READ GUIDE →</span>
+        </div>
+
+        <div class="guide-card rounded-xl p-6 space-y-3 cursor-pointer transition-colors duration-200">
+          <span class="material-symbols-outlined text-3xl" style="color:var(--accent)">content_cut</span>
+          <h4 class="text-2xl font-medium" style="color:var(--text-primary)">Propagation</h4>
+          <p class="text-sm" style="color:var(--text-body)">From node to new plant — a step-by-step visual guide.</p>
+          <span class="text-xs font-semibold tracking-widest uppercase" style="color:var(--accent)">READ GUIDE →</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How It Works ── -->
+  <section class="section-tinted py-24">
+    <div class="max-w-7xl mx-auto px-10">
+      <div class="text-center mb-14 fade-up">
+        <span class="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style="color:var(--accent)">Getting Started</span>
+        <h2 class="text-4xl font-light" style="color:var(--text-primary)">How the Herbarium <span class="cursive-accent" style="color:var(--accent)">works</span></h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+        <div class="flex flex-col items-start gap-4 fade-up">
+          <div class="step-num w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg flex-shrink-0">1</div>
+          <div>
+            <h4 class="text-2xl font-medium mb-2" style="color:var(--text-primary)">Search any plant</h4>
+            <p class="text-base leading-6" style="color:var(--text-body)">Type a common or scientific name into the search bar. Our archive covers over 1,200 species from tropical aroids to hardy succulents.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-start gap-4 fade-up" style="transition-delay:0.15s">
+          <div class="step-num w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg flex-shrink-0">2</div>
+          <div>
+            <h4 class="text-2xl font-medium mb-2" style="color:var(--text-primary)">Read the full profile</h4>
+            <p class="text-base leading-6" style="color:var(--text-body)">Every plant page covers light, water, humidity, soil, toxicity, seasonality, and common problems — with the reasoning behind each requirement.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-start gap-4 fade-up" style="transition-delay:0.3s">
+          <div class="step-num w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg flex-shrink-0">3</div>
+          <div>
+            <h4 class="text-2xl font-medium mb-2" style="color:var(--text-primary)">Save &amp; track your plants</h4>
+            <p class="text-base leading-6" style="color:var(--text-body)">Create a free account to build your personal plant collection, bookmark guides, and get seasonal care reminders tailored to your species.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Newsletter ── -->
+  <section class="newsletter-section py-24">
+    <div class="max-w-7xl mx-auto px-10 text-center">
+      <div class="max-w-2xl mx-auto space-y-6">
+        <h2 class="text-4xl font-light" style="color:var(--text-primary)">Join the <span class="cursive-accent" style="color:var(--accent)">Cultivation Circle</span></h2>
+        <p class="text-lg leading-7" style="color:var(--text-body)">
+          Bi-weekly plant care insights, seasonal guides, and deep-dives on botanical rarities — straight to your inbox.
+        </p>
+        <div class="flex flex-col md:flex-row gap-3 mt-8">
+          <input
+            class="newsletter-input flex-grow rounded-lg px-6 py-4 transition-all font-medium"
+            placeholder="Your email address"
+            type="email"
+          />
+          <button class="btn-primary px-10 py-4 rounded-lg font-medium whitespace-nowrap active:scale-95 transition-transform hover:scale-[1.02]">Subscribe</button>
+        </div>
+        <p class="text-xs font-semibold tracking-widest uppercase" style="color:var(--text-muted)">Free forever. No spam. Unsubscribe anytime.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ── -->
+<footer class="site-footer w-full">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto px-10 py-16">
+    <div class="space-y-3 text-center md:text-left">
+      <div class="cursive-accent text-2xl font-medium" style="color:var(--accent)">The Herbarium</div>
+      <p class="text-base max-w-xs" style="color:var(--text-muted)">© 2024 The Herbarium. Cultivating botanical mindfulness.</p>
+    </div>
+    <div class="flex gap-8 flex-wrap justify-center">
+      <a class="footer-link text-base transition-colors duration-300" href="#">Instagram</a>
+      <a class="footer-link text-base transition-colors duration-300" href="#">Pinterest</a>
+      <a class="footer-link text-base transition-colors duration-300" href="#">Newsletter</a>
+      <a class="footer-link text-base transition-colors duration-300" href="#">Contact Us</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Static film grain
+  (function () {
+    const canvas = document.getElementById('grain-overlay');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    function drawGrain() {
+      const w = canvas.width, h = canvas.height;
+      const img = ctx.createImageData(w, h);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const v = (Math.random() * 255) | 0;
+        img.data[i] = img.data[i+1] = img.data[i+2] = v;
+        img.data[i+3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+    window.addEventListener('resize', () => { resize(); drawGrain(); });
+    resize(); drawGrain();
+  })();
+</script>
+
+</body>
+</html>
