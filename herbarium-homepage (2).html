@@ -220,6 +220,33 @@
     transition: background 0.2s;
   }
   .cat-card:hover .cat-icon-wrap { background: var(--accent); }
+  .cat-image-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    aspect-ratio: 4 / 5;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .cat-image-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 6px 24px rgba(126,200,126,0.14);
+    transform: translateY(-2px);
+  }
+  .cat-image-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .cat-image-card:hover img { transform: scale(1.04); }
+  .cat-image-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    background: linear-gradient(to top, rgba(0,0,0,0.68), rgba(0,0,0,0.08) 60%, rgba(0,0,0,0));
+  }
 
   /* Stats */
   .stat-number { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent); }
@@ -301,17 +328,22 @@
         <p class="text-lg leading-7" style="color:var(--text-body)">
           Look up any plant and learn exactly how to care for it — watering schedules, light needs, soil, and more. Written by botanists, not algorithms.
         </p>
-        <div class="flex gap-4 flex-wrap pt-2">
-          <a href="#" class="btn-primary px-8 py-4 rounded-lg font-medium hover:scale-[1.02] active:scale-95 transition-transform duration-200 inline-flex items-center gap-2">
-            <span class="material-symbols-outlined text-base">search</span> Search Plants
-          </a>
+        <div class="flex gap-4 flex-wrap pt-2 items-center">
+          <div id="hero-search-wrap" class="inline-flex items-center">
+            <button id="hero-search-btn" class="btn-primary px-8 py-4 rounded-lg font-medium hover:scale-[1.02] active:scale-95 transition-transform duration-200 inline-flex items-center gap-2">
+              <span class="material-symbols-outlined text-base">search</span>
+              <span class="hero-search-label">Search Plants</span>
+            </button>
+            <input id="hero-search-input" type="text" placeholder="Search plants by common or scientific name..." class="hidden ml-3 px-4 py-3 rounded-lg border bg-white text-sm md:w-72" />
+            <button id="hero-search-close" class="hidden material-symbols-outlined p-2 rounded-full transition-colors ml-2">close</button>
+          </div>
           <a href="#" class="btn-outline px-8 py-4 rounded-lg font-medium transition-colors duration-200 inline-block">
             Browse Guides
           </a>
         </div>
       </div>
 
-      <!-- Image mosaic -->
+      <!-- Top right square Images -->
       <div class="w-full md:w-1/2 grid grid-cols-2 gap-3">
         <div class="col-span-2 aspect-[16/7] overflow-hidden rounded-xl relative">
           <img class="w-full h-full object-cover plant-card-img" src="/Images/plants6.jpg" alt="Coffee Plants"/>
@@ -362,52 +394,82 @@
 
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
 
-        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
-          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined">home</span>
+        <a href="#" class="cat-image-card group rounded-xl">
+          <img src="/Images/CategoryImages/windowaPlants.jpg" alt="Indoor plants" />
+          <div class="cat-image-overlay p-5">
+            <div class="text-white w-full">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <span class="text-base font-semibold">Indoor</span>
+                <span class="material-symbols-outlined text-base">home</span>
+              </div>
+              <span class="text-xs font-semibold tracking-wide opacity-85">340 species</span>
+            </div>
           </div>
-          <span class="text-base font-semibold" style="color:var(--text-primary)">Indoor</span>
-          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">340 species</span>
         </a>
 
-        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
-          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined">park</span>
+        <a href="#" class="cat-image-card group rounded-xl">
+          <img src="/Images/OutdoorPlants.jpg" alt="Outdoor plants" />
+          <div class="cat-image-overlay p-5">
+            <div class="text-white w-full">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <span class="text-base font-semibold">Outdoor</span>
+                <span class="material-symbols-outlined text-base">park</span>
+              </div>
+              <span class="text-xs font-semibold tracking-wide opacity-85">280 species</span>
+            </div>
           </div>
-          <span class="text-base font-semibold" style="color:var(--text-primary)">Outdoor</span>
-          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">280 species</span>
         </a>
 
-        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
-          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined">water_drop</span>
+        <a href="#" class="cat-image-card group rounded-xl">
+          <img src="/Images/CategoryImages/CategoryPlants1.jpg" alt="Low water plants" />
+          <div class="cat-image-overlay p-5">
+            <div class="text-white w-full">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <span class="text-base font-semibold">Low Water</span>
+                <span class="material-symbols-outlined text-base">water_drop</span>
+              </div>
+              <span class="text-xs font-semibold tracking-wide opacity-85">190 species</span>
+            </div>
           </div>
-          <span class="text-base font-semibold" style="color:var(--text-primary)">Low Water</span>
-          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">190 species</span>
         </a>
 
-        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
-          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined">bedtime</span>
+        <a href="#" class="cat-image-card group rounded-xl">
+          <img src="/Images/CategoryImages/categotyplants2.jpg" alt="Low light plants" />
+          <div class="cat-image-overlay p-5">
+            <div class="text-white w-full">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <span class="text-base font-semibold">Low Light</span>
+                <span class="material-symbols-outlined text-base">bedtime</span>
+              </div>
+              <span class="text-xs font-semibold tracking-wide opacity-85">145 species</span>
+            </div>
           </div>
-          <span class="text-base font-semibold" style="color:var(--text-primary)">Low Light</span>
-          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">145 species</span>
         </a>
 
-        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
-          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined">child_care</span>
+        <a href="#" class="cat-image-card group rounded-xl">
+          <img src="/Images/CategoryImages/catergoryplants3.jpg" alt="Beginner friendly plants" />
+          <div class="cat-image-overlay p-5">
+            <div class="text-white w-full">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <span class="text-base font-semibold">Beginner</span>
+                <span class="material-symbols-outlined text-base">child_care</span>
+              </div>
+              <span class="text-xs font-semibold tracking-wide opacity-85">210 species</span>
+            </div>
           </div>
-          <span class="text-base font-semibold" style="color:var(--text-primary)">Beginner</span>
-          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">210 species</span>
         </a>
 
-        <a href="#" class="cat-card group flex flex-col items-center gap-3 p-5 rounded-xl text-center">
-          <div class="cat-icon-wrap w-12 h-12 rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined">air</span>
+        <a href="#" class="cat-image-card group rounded-xl">
+          <img src="/Images/plants5.jpg" alt="Air purifying plants" />
+          <div class="cat-image-overlay p-5">
+            <div class="text-white w-full">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <span class="text-base font-semibold">Air Purifying</span>
+                <span class="material-symbols-outlined text-base">air</span>
+              </div>
+              <span class="text-xs font-semibold tracking-wide opacity-85">95 species</span>
+            </div>
           </div>
-          <span class="text-base font-semibold" style="color:var(--text-primary)">Air Purifying</span>
-          <span class="text-xs font-semibold tracking-wide" style="color:var(--text-muted)">95 species</span>
         </a>
 
       </div>
@@ -418,11 +480,11 @@
   <section class="max-w-7xl mx-auto px-10 py-20 fade-up">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
       <div>
-        <div class="stat-number text-5xl mb-2">1,200+</div>
+        <div class="stat-number font-semibold tracking-widest uppercase text-5xl mb-2">1,200+</div>
         <div class="text-xs font-semibold tracking-widest uppercase" style="color:var(--text-muted)">Plant Species</div>
       </div>
       <div>
-        <div class="stat-number text-5xl mb-2">400+</div>
+        <div class="stat-number font-semibold tracking-widest uppercase text-5xl mb-2">400+</div>
         <div class="text-xs font-semibold tracking-widest uppercase" style="color:var(--text-muted)">Care Guides</div>
       </div>
       <div>
@@ -440,7 +502,7 @@
   <section class="max-w-5xl mx-auto px-10 py-24 text-center section-divider border-t">
     <blockquote class="space-y-6 fade-up">
       <p class="pull-quote cursive-accent text-4xl md:text-5xl leading-relaxed">
-        "Plants are the original architecture — every leaf a decision, every stem a solution."
+        "Plants are the original architecture ."
       </p>
       <cite class="pull-cite text-xs font-semibold tracking-widest uppercase not-italic block">— The Herbarium Philosophy</cite>
     </blockquote>
@@ -591,6 +653,32 @@
     });
   }, { threshold: 0.15 });
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Hero search toggle
+  (function(){
+    const heroBtn = document.getElementById('hero-search-btn');
+    const heroInput = document.getElementById('hero-search-input');
+    const heroClose = document.getElementById('hero-search-close');
+    if (!heroBtn || !heroInput) return;
+
+    function openHeroSearch(){
+      heroBtn.style.display = 'none';
+      heroInput.classList.remove('hidden');
+      if (heroClose) heroClose.classList.remove('hidden');
+      heroInput.focus();
+    }
+    function closeHeroSearch(){
+      heroInput.classList.add('hidden');
+      if (heroClose) heroClose.classList.add('hidden');
+      heroBtn.style.display = 'inline-flex';
+      heroInput.value = '';
+    }
+
+    heroBtn.addEventListener('click', openHeroSearch);
+    if (heroClose) heroClose.addEventListener('click', closeHeroSearch);
+    heroInput.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHeroSearch(); });
+    heroInput.addEventListener('blur', () => { if (!heroInput.value) closeHeroSearch(); });
+  })();
 
   // Static film grain
   (function () {
