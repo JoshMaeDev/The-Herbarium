@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary": "#4a654a",
+          "background": "#f8faf8",
+          "surface": "#f8faf8",
+          "on-surface": "#191c1b",
+          "outline": "#737971",
+          "outline-variant": "#c3c8bf",
+          "surface-container-low": "#f2f4f2",
+          "surface-container": "#eceeec",
+          "surface-container-high": "#e6e9e7",
+          "surface-container-highest": "#e1e3e1",
+          "on-surface-variant": "#434841",
+        },
+        "fontFamily": {
+          "body": ["Hanken Grotesk"],
+          "display": ["Playfair Display"],
+        },
+      },
+    },
+  }
+</script>
+<style>
+  :root {
+    --bg:           #ffffff;
+    --surface:      #ffffff;
+    --surface-mid:  #f7f7f8;
+    --surface-high: #f2f2f3;
+    --border:       rgba(0,0,0,0.08);
+    --text-primary: #000000;
+    --text-body:    #111827;
+    --text-muted:   #6b7280;
+    --accent:       #4a654a;
+    --accent-dim:   #6b8a6b;
+    --accent-light: #e8f0e8;
+    --accent-text:  #ffffff;
+    --pill-bg:      #f3f4f6;
+    --pill-text:    #111827;
+  }
+
+  * { box-sizing: border-box; }
+  body { background-color: var(--bg); color: var(--text-primary); font-family: 'Hanken Grotesk', sans-serif; }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+  }
+  .cursive-accent {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+  }
+
+  /* Nav */
+  .nav-bar {
+    background: rgba(255,255,255,0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(6px);
+  }
+  .nav-link { color: var(--text-body); text-decoration: none; }
+  .nav-link:hover { color: var(--accent); }
+  .nav-link-active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+  .nav-icon { color: var(--text-primary); background: none; border: none; cursor: pointer; }
+  .nav-icon:hover { background: var(--surface-mid); border-radius: 9999px; }
+
+  /* Buttons */
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-text);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+  .btn-outline:hover { background: var(--surface-mid); }
+
+  /* Care stat cards */
+  .care-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .care-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 20px rgba(74,101,74,0.1);
+    transform: translateY(-2px);
+  }
+  .care-icon-wrap {
+    width: 44px; height: 44px;
+    background: var(--accent-light);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Difficulty bar */
+  .diff-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    width: 100%;
+  }
+  .diff-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 1s ease;
+  }
+
+  /* Tag pills */
+  .tag-pill {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 4px 12px;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+  .tag-pill-neutral {
+    background: var(--pill-bg);
+    color: var(--text-muted);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 4px 12px;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+
+  /* Section styles */
+  .section-tinted { background: var(--surface-mid); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .section-divider { border-top: 1px solid var(--border); }
+
+  /* Image gallery */
+  .gallery-main {
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    border-radius: 16px;
+    position: relative;
+    background: var(--surface-mid);
+  }
+  .gallery-main img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .gallery-main:hover img { transform: scale(1.03); }
+
+  .gallery-thumb {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    background: var(--surface-mid);
+  }
+  .gallery-thumb img { width:100%; height:100%; object-fit:cover; }
+  .gallery-thumb.active { border-color: var(--accent); }
+  .gallery-thumb:hover { border-color: var(--accent-dim); }
+
+  /* Breadcrumb */
+  .breadcrumb a { color: var(--text-muted); text-decoration: none; font-size: 13px; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb span { color: var(--text-muted); font-size: 13px; }
+
+  /* Toxicity badge */
+  .badge-toxic { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; padding: 4px 12px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; }
+  .badge-safe  { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(74,101,74,0.2); border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; padding: 4px 12px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; }
+
+  /* Seasonal calendar */
+  .season-cell {
+    flex: 1;
+    text-align: center;
+    padding: 10px 4px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .season-active { background: var(--accent); color: #fff; }
+  .season-semi { background: var(--accent-light); color: var(--accent); }
+  .season-dormant { background: var(--pill-bg); color: var(--text-muted); }
+
+  /* Accordion */
+  .accordion-item { border-bottom: 1px solid var(--border); }
+  .accordion-trigger {
+    width: 100%; background: none; border: none;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 0; cursor: pointer;
+    text-align: left;
+  }
+  .accordion-trigger:hover .accordion-title { color: var(--accent); }
+  .accordion-title { font-size: 17px; font-weight: 500; color: var(--text-primary); transition: color 0.2s; }
+  .accordion-icon { color: var(--text-muted); transition: transform 0.3s; font-size: 20px; }
+  .accordion-item.open .accordion-icon { transform: rotate(45deg); }
+  .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .accordion-body-inner { padding-bottom: 18px; color: var(--text-body); font-size: 15px; line-height: 1.7; }
+
+  /* Related cards */
+  .related-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    text-decoration: none;
+    display: block;
+  }
+  .related-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 6px 24px rgba(74,101,74,0.12);
+    transform: translateY(-3px);
+  }
+  .related-card img {
+    width:100%; aspect-ratio:4/3; object-fit:cover;
+    transition: transform 0.5s ease;
+  }
+  .related-card:hover img { transform: scale(1.04); }
+
+  /* Search bar in hero */
+  .search-bar-inline {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    display: flex; align-items: center;
+    padding: 6px 8px 6px 18px;
+    max-width: 420px;
+    transition: box-shadow 0.2s;
+  }
+  .search-bar-inline:focus-within { box-shadow: 0 0 0 2px rgba(74,101,74,0.25); border-color: var(--accent); }
+  .search-bar-inline input { background:none; border:none; outline:none; flex:1; font-size:14px; color: var(--text-primary); font-family: 'Hanken Grotesk', sans-serif; }
+  .search-bar-inline input::placeholder { color: var(--text-muted); }
+
+  /* Film grain */
+  #grain-overlay {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.22;
+    mix-blend-mode: overlay;
+  }
+
+  /* Fade-up animation */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* Watering frequency visual */
+  .water-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .water-dot.active { background: var(--accent); }
+  .water-dot.inactive { background: var(--border); border: 1px solid rgba(0,0,0,0.1); }
+
+  /* Stat score ring placeholder */
+  .score-ring {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-light);
+    border-top-color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--accent);
+    position: relative;
+  }
+
+  /* Footer */
+  .site-footer { background: var(--surface); border-top: 1px solid var(--border); }
+  .footer-link { color: var(--text-muted); text-decoration: none; }
+  .footer-link:hover { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .hide-mobile { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<canvas id="grain-overlay" aria-hidden="true"></canvas>
+
+<!-- ── Navigation ── -->
+<header class="nav-bar sticky top-0 z-50 w-full">
+  <nav class="flex justify-between items-center px-10 py-4 max-w-7xl mx-auto">
+    <a href="#" class="cursive-accent text-2xl font-medium" style="color:var(--accent); text-decoration:none">The Herbarium</a>
+    <div class="hidden md:flex gap-8 items-center">
+      <a class="nav-link-active font-medium text-lg pb-1 transition-colors duration-200" href="#">Explore Plants</a>
+      <a class="nav-link font-medium text-lg transition-colors duration-200" href="#">Care Guides</a>
+      <a class="nav-link font-medium text-lg transition-colors duration-200" href="#">Our Story</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="nav-icon material-symbols-outlined p-2 rounded-full transition-colors active:scale-95 duration-200">search</button>
+      <a href="#" class="btn-primary hidden md:inline-flex px-5 py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-95 transition-transform duration-200">Sign In</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ── Search Bar Strip ── -->
+  <div class="section-tinted py-6">
+    <div class="max-w-7xl mx-auto px-10 flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div class="search-bar-inline w-full md:w-auto flex-grow md:max-w-lg">
+        <span class="material-symbols-outlined text-base mr-2" style="color:var(--text-muted)">search</span>
+        <input type="text" placeholder="Search 1,200+ plants by name or type…" value="Monstera deliciosa" />
+        <button class="btn-primary px-4 py-2 rounded-full text-sm font-semibold ml-2 gap-1">
+          Search
+        </button>
+      </div>
+      <div class="flex gap-2 flex-wrap justify-center md:justify-end">
+        <span class="tag-pill-neutral cursor-pointer hover:bg-gray-200 transition-colors">Indoor</span>
+        <span class="tag-pill-neutral cursor-pointer hover:bg-gray-200 transition-colors">Tropical</span>
+        <span class="tag-pill-neutral cursor-pointer hover:bg-gray-200 transition-colors">Low Light</span>
+        <span class="tag-pill-neutral cursor-pointer hover:bg-gray-200 transition-colors">Beginner</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Breadcrumb + Hero Plant Profile ── -->
+  <section class="max-w-7xl mx-auto px-10 pt-10 pb-4">
+    <nav class="breadcrumb flex items-center gap-2 mb-8">
+      <a href="#">Home</a>
+      <span class="material-symbols-outlined text-sm" style="color:var(--text-muted); font-size:14px">chevron_right</span>
+      <a href="#">Plants</a>
+      <span class="material-symbols-outlined text-sm" style="color:var(--text-muted); font-size:14px">chevron_right</span>
+      <a href="#">Tropical</a>
+      <span class="material-symbols-outlined text-sm" style="color:var(--text-muted); font-size:14px">chevron_right</span>
+      <span style="color:var(--text-primary); font-size:13px; font-weight:500">Monstera deliciosa</span>
+    </nav>
+
+    <div class="flex flex-col lg:flex-row gap-14 items-start">
+
+      <!-- LEFT: Gallery -->
+      <div class="w-full lg:w-5/12 space-y-3 fade-up">
+        <div class="gallery-main" id="gallery-main">
+          <!-- Placeholder gradient image -->
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,#d4e8d3 0%,#a8c8a5 40%,#6b9b68 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;">
+            <span class="material-symbols-outlined" style="font-size:72px;color:rgba(255,255,255,0.7)">psychiatry</span>
+            <span style="color:rgba(255,255,255,0.8);font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">Plant image placeholder</span>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;background:linear-gradient(to top,rgba(0,0,0,0.5),transparent);">
+            <span class="tag-pill" style="background:rgba(255,255,255,0.15);color:#fff;backdrop-filter:blur(4px);">Featured</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-2">
+          <div class="gallery-thumb active">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#d4e8d3,#6b9b68);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:24px;color:rgba(255,255,255,0.7)">psychiatry</span>
+            </div>
+          </div>
+          <div class="gallery-thumb">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#c8e0c6,#5a8857);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:24px;color:rgba(255,255,255,0.7)">nature</span>
+            </div>
+          </div>
+          <div class="gallery-thumb">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#e0ede0,#7aaa76);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:24px;color:rgba(255,255,255,0.7)">eco</span>
+            </div>
+          </div>
+          <div class="gallery-thumb">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#b8d4b6,#4a7a47);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:24px;color:rgba(255,255,255,0.7)">forest</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Plant info -->
+      <div class="w-full lg:w-7/12 space-y-7 fade-up" style="transition-delay:0.1s">
+
+        <!-- Title block -->
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 flex-wrap">
+            <span class="tag-pill">Tropical</span>
+            <span class="tag-pill-neutral">Aroid</span>
+            <span class="badge-toxic">
+              <span class="material-symbols-outlined" style="font-size:14px">warning</span>
+              Toxic to pets
+            </span>
+          </div>
+          <h1 style="font-size:clamp(36px,5vw,56px);line-height:1.05;font-weight:300;color:var(--text-primary)">
+            Monstera<br/>
+            <span class="cursive-accent" style="color:var(--accent)">deliciosa</span>
+          </h1>
+          <p style="color:var(--text-muted);font-size:15px;font-weight:500;">Swiss Cheese Plant &nbsp;·&nbsp; Split-Leaf Philodendron</p>
+        </div>
+
+        <!-- Rating + actions row -->
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div class="flex items-center gap-5">
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base" style="color:#f59e0b;--fill:1;font-variation-settings:'FILL' 1,'wght' 400">star</span>
+              <span class="material-symbols-outlined text-base" style="color:#f59e0b;font-variation-settings:'FILL' 1,'wght' 400">star</span>
+              <span class="material-symbols-outlined text-base" style="color:#f59e0b;font-variation-settings:'FILL' 1,'wght' 400">star</span>
+              <span class="material-symbols-outlined text-base" style="color:#f59e0b;font-variation-settings:'FILL' 1,'wght' 400">star</span>
+              <span class="material-symbols-outlined text-base" style="color:#d1d5db;font-variation-settings:'FILL' 1,'wght' 400">star</span>
+              <span style="font-size:13px;font-weight:600;color:var(--text-muted);margin-left:4px;">4.2 (1,834 growers)</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="btn-outline px-4 py-2 rounded-lg text-sm font-medium gap-2">
+              <span class="material-symbols-outlined text-base">bookmark_add</span>
+              Save
+            </button>
+            <button class="btn-outline px-4 py-2 rounded-lg text-sm font-medium gap-2">
+              <span class="material-symbols-outlined text-base">share</span>
+              Share
+            </button>
+            <button class="btn-primary px-5 py-2 rounded-lg text-sm font-semibold gap-2">
+              <span class="material-symbols-outlined text-base">add</span>
+              Add to Collection
+            </button>
+          </div>
+        </div>
+
+        <hr style="border-color:var(--border)"/>
+
+        <!-- Quick bio -->
+        <p style="color:var(--text-body);font-size:16px;line-height:1.75;">
+          The Monstera deliciosa — colloquially the Swiss Cheese Plant — is a flowering vine from the tropical forests of southern Mexico and Panama. Celebrated for its dramatic, naturally fenestrated leaves, it has become one of the most recognisable houseplants in the world. In the wild it climbs trees using aerial roots; in cultivation it rewards minimal effort with maximum spectacle.
+        </p>
+
+        <!-- Care overview grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+
+          <div class="care-card p-4 flex items-start gap-3">
+            <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">water_drop</span></div>
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Watering</div>
+              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Every 1–2 wks</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Let topsoil dry out</div>
+            </div>
+          </div>
+
+          <div class="care-card p-4 flex items-start gap-3">
+            <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">light_mode</span></div>
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Light</div>
+              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Bright indirect</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">No direct sun</div>
+            </div>
+          </div>
+
+          <div class="care-card p-4 flex items-start gap-3">
+            <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">thermostat</span></div>
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Temperature</div>
+              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">18 – 30 °C</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Frost-sensitive</div>
+            </div>
+          </div>
+
+          <div class="care-card p-4 flex items-start gap-3">
+            <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">humidity_mid</span></div>
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Humidity</div>
+              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">50 – 70 %</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Mist occasionally</div>
+            </div>
+          </div>
+
+          <div class="care-card p-4 flex items-start gap-3">
+            <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">grass</span></div>
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Soil</div>
+              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Well-draining</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">pH 5.5 – 7.0</div>
+            </div>
+          </div>
+
+          <div class="care-card p-4 flex items-start gap-3">
+            <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">potted_plant</span></div>
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Repotting</div>
+              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Every 2 years</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Spring preferred</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Difficulty -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <span style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);">Difficulty</span>
+            <span style="font-size:13px;font-weight:600;color:var(--accent);">Beginner-friendly</span>
+          </div>
+          <div class="diff-track"><div class="diff-fill" style="width:28%"></div></div>
+          <div class="flex justify-between" style="font-size:11px;color:var(--text-muted);">
+            <span>Beginner</span><span>Intermediate</span><span>Expert</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Taxonomy + Origin ── -->
+  <section class="max-w-7xl mx-auto px-10 py-14 section-divider">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 fade-up">
+
+      <!-- Taxonomy -->
+      <div class="space-y-5">
+        <h2 class="text-2xl font-medium" style="color:var(--text-primary)">Taxonomy</h2>
+        <div class="space-y-0">
+          <div class="flex justify-between py-3" style="border-bottom:1px solid var(--border)">
+            <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Family</span>
+            <span style="font-size:15px;color:var(--text-primary);font-weight:500">Araceae</span>
+          </div>
+          <div class="flex justify-between py-3" style="border-bottom:1px solid var(--border)">
+            <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Genus</span>
+            <span style="font-size:15px;color:var(--text-primary);font-weight:500;font-style:italic">Monstera</span>
+          </div>
+          <div class="flex justify-between py-3" style="border-bottom:1px solid var(--border)">
+            <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Species</span>
+            <span style="font-size:15px;color:var(--text-primary);font-weight:500;font-style:italic">M. deliciosa</span>
+          </div>
+          <div class="flex justify-between py-3" style="border-bottom:1px solid var(--border)">
+            <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Authority</span>
+            <span style="font-size:15px;color:var(--text-primary);font-weight:500">Liebm., 1849</span>
+          </div>
+          <div class="flex justify-between py-3">
+            <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Native Range</span>
+            <span style="font-size:15px;color:var(--text-primary);font-weight:500">S. Mexico → Panama</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seasonal calendar -->
+      <div class="space-y-5">
+        <h2 class="text-2xl font-medium" style="color:var(--text-primary)">Seasonal Activity</h2>
+        <div class="space-y-3">
+          <div style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Growing months</div>
+          <div class="flex gap-1">
+            <div class="season-cell season-dormant">Jan</div>
+            <div class="season-cell season-dormant">Feb</div>
+            <div class="season-cell season-semi">Mar</div>
+            <div class="season-cell season-active">Apr</div>
+            <div class="season-cell season-active">May</div>
+            <div class="season-cell season-active">Jun</div>
+            <div class="season-cell season-active">Jul</div>
+            <div class="season-cell season-active">Aug</div>
+            <div class="season-cell season-semi">Sep</div>
+            <div class="season-cell season-semi">Oct</div>
+            <div class="season-cell season-dormant">Nov</div>
+            <div class="season-cell season-dormant">Dec</div>
+          </div>
+          <div class="flex gap-5 mt-3">
+            <div class="flex items-center gap-2"><div style="width:12px;height:12px;border-radius:3px;background:var(--accent)"></div><span style="font-size:12px;color:var(--text-muted)">Active growth</span></div>
+            <div class="flex items-center gap-2"><div style="width:12px;height:12px;border-radius:3px;background:var(--accent-light)"></div><span style="font-size:12px;color:var(--text-muted)">Transitional</span></div>
+            <div class="flex items-center gap-2"><div style="width:12px;height:12px;border-radius:3px;background:var(--pill-bg);border:1px solid var(--border)"></div><span style="font-size:12px;color:var(--text-muted)">Dormant</span></div>
+          </div>
+        </div>
+
+        <div class="care-card p-5 mt-4 flex gap-4 items-start">
+          <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">tips_and_updates</span></div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Spring tip</div>
+            <div style="font-size:14px;color:var(--text-body);line-height:1.6;">Resume fertilising in March as daylight increases. This triggers the most vigorous fenestrated leaf growth of the year.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Deep-dive Accordion ── -->
+  <section class="section-tinted py-20">
+    <div class="max-w-7xl mx-auto px-10">
+      <div class="flex flex-col md:flex-row gap-16 items-start">
+
+        <div class="w-full md:w-5/12 space-y-4 fade-up">
+          <span class="text-xs font-semibold tracking-[0.2em] uppercase block" style="color:var(--accent)">The Deep Dive</span>
+          <h2 class="text-4xl font-light leading-tight" style="color:var(--text-primary)">
+            Care science, <span class="cursive-accent" style="color:var(--accent)">explained.</span>
+          </h2>
+          <p class="text-base leading-7" style="color:var(--text-body)">
+            We go beyond checklists. Each section below details the science behind what Monstera deliciosa needs — and why — so you can adapt care to your specific conditions.
+          </p>
+          <div class="care-card p-6 mt-4 space-y-3">
+            <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);">Botanist's note</div>
+            <p class="cursive-accent text-xl leading-relaxed" style="color:var(--accent)">"The fenestrations aren't damage — they're adaptations that let wind pass through large leaves in their native tropical storms."</p>
+            <div style="font-size:12px;color:var(--text-muted);">— Placeholder, Lead Botanist</div>
+          </div>
+        </div>
+
+        <div class="w-full md:w-7/12 fade-up" style="transition-delay:0.1s">
+          <div class="accordion-item open">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">
+              <span class="accordion-title">Watering & Root Health</span>
+              <span class="material-symbols-outlined accordion-icon">add</span>
+            </button>
+            <div class="accordion-body" style="max-height:400px">
+              <div class="accordion-body-inner">
+                <p>Monstera deliciosa is susceptible to root rot when overwatered — the most common cause of decline in cultivation. The hemiepiphytic root system evolved to dry between rainfall events in its native habitat, making the "soak and dry" method ideal. Insert a finger 5 cm into the substrate; water only when dry at that depth. Terracotta pots accelerate drying and are recommended for beginners. In winter, reduce watering frequency by roughly 50% as growth slows.</p>
+                <div class="flex gap-2 mt-4 flex-wrap">
+                  <span class="tag-pill-neutral">Overwatering risk: High</span>
+                  <span class="tag-pill-neutral">Root sensitivity: Medium</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">
+              <span class="accordion-title">Light Requirements & Fenestration</span>
+              <span class="material-symbols-outlined accordion-icon">add</span>
+            </button>
+            <div class="accordion-body">
+              <div class="accordion-body-inner">
+                <p>Bright, indirect light for 6–8 hours per day produces the largest, most fenestrated leaves. Direct midday sun bleaches the deep green foliage and causes scorch. North-facing windows are usually insufficient; east or west aspects with diffused light are optimal in the UK. Notably, insufficient light suppresses fenestration — younger plants may produce entire (un-split) leaves regardless of age if kept too dark. A grow light of 1000–3000 lux placed 30 cm above the canopy corrects this effectively.</p>
+                <div class="flex gap-2 mt-4 flex-wrap">
+                  <span class="tag-pill-neutral">Optimal: 1,000–3,000 lux</span>
+                  <span class="tag-pill-neutral">Avoid direct sun</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">
+              <span class="accordion-title">Soil, Aeration & pH</span>
+              <span class="material-symbols-outlined accordion-icon">add</span>
+            </button>
+            <div class="accordion-body">
+              <div class="accordion-body-inner">
+                <p>A recommended mix: 40% high-quality potting compost, 30% perlite, 20% orchid bark chips, 10% activated charcoal. This replicates the loose, organic, fast-draining epiphytic substrate of the forest floor. The target pH is 5.5–7.0 — slightly acidic to neutral. Avoid dense, peat-heavy mixes that compact over time and suffocate roots. Repot when you see roots escaping drainage holes or when the plant dries out within 24 hours of watering.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">
+              <span class="accordion-title">Fertilising Schedule</span>
+              <span class="material-symbols-outlined accordion-icon">add</span>
+            </button>
+            <div class="accordion-body">
+              <div class="accordion-body-inner">
+                <p>Feed monthly during the growing season (April – September) with a balanced liquid fertiliser at half the recommended strength. A higher nitrogen ratio (e.g. 3-1-2 NPK) promotes lush foliage growth. Cease fertilising entirely from October through February to prevent salt build-up in the dormant root zone. Flush the substrate with plain water every 2–3 months to prevent mineral accumulation regardless of season.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">
+              <span class="accordion-title">Common Problems & Pests</span>
+              <span class="material-symbols-outlined accordion-icon">add</span>
+            </button>
+            <div class="accordion-body">
+              <div class="accordion-body-inner">
+                <p>Yellow leaves most often indicate overwatering or nutrient deficiency — check roots for rot before amending the feeding schedule. Brown leaf tips suggest low humidity or fluoride sensitivity; switching to rainwater resolves most tip-burn cases. Common pest vectors include spider mites (fine webbing on leaf undersides, thriving in dry conditions), mealybugs (white cottony masses at leaf axils), and thrips (silvery streaking). Treat early with neem oil or insecticidal soap.</p>
+                <div class="flex gap-2 mt-4 flex-wrap">
+                  <span class="tag-pill-neutral">Spider mites</span>
+                  <span class="tag-pill-neutral">Mealybugs</span>
+                  <span class="tag-pill-neutral">Thrips</span>
+                  <span class="tag-pill-neutral">Root rot</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">
+              <span class="accordion-title">Propagation Methods</span>
+              <span class="material-symbols-outlined accordion-icon">add</span>
+            </button>
+            <div class="accordion-body">
+              <div class="accordion-body-inner">
+                <p>The most reliable method is stem-tip cuttings with at least one node and one aerial root. Place the cutting in water or moist sphagnum moss until white root tips extend 3–5 cm, then transfer to substrate. Success rate is very high (85–95%) in spring and summer. Air-layering — wrapping a node in damp sphagnum and black plastic wrap while still attached to the mother plant — achieves near-100% success and is recommended for rare cultivars. Seed propagation is possible but extremely slow and uncommon in cultivation.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Watering frequency visual ── -->
+  <section class="max-w-7xl mx-auto px-10 py-20 section-divider fade-up">
+    <div class="text-center mb-10">
+      <span class="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style="color:var(--accent)">Care at a glance</span>
+      <h2 class="text-3xl font-light" style="color:var(--text-primary)">Watering <span class="cursive-accent" style="color:var(--accent)">frequency</span></h2>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="flex items-center justify-between gap-1 mb-3">
+        <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);">Week 1</span>
+        <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);">Week 2</span>
+      </div>
+      <div class="grid grid-cols-14 gap-1.5" style="grid-template-columns:repeat(14,1fr)">
+        <!-- Day 1 = water -->
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:16px;color:#fff">water_drop</span>
+          </div>
+          <span style="font-size:10px;color:var(--accent);font-weight:600">M</span>
+        </div>
+        <!-- days 2-7 = dry -->
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">remove</span>
+          </div>
+          <span style="font-size:10px;color:var(--text-muted)">T</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">W</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">T</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">F</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">S</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">S</span>
+        </div>
+        <!-- day 8 = check -->
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--accent-light);border:2px dashed var(--accent);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:14px;color:var(--accent)">search</span>
+          </div>
+          <span style="font-size:10px;color:var(--accent);font-weight:600">M</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">T</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">W</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">T</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">F</span>
+        </div>
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--border);"></div>
+          <span style="font-size:10px;color:var(--text-muted)">S</span>
+        </div>
+        <!-- day 14 = water again -->
+        <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:32px;height:32px;border-radius:999px;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:16px;color:#fff">water_drop</span>
+          </div>
+          <span style="font-size:10px;color:var(--accent);font-weight:600">S</span>
+        </div>
+      </div>
+      <div class="flex gap-6 justify-center mt-6">
+        <div class="flex items-center gap-2"><div style="width:12px;height:12px;border-radius:50%;background:var(--accent)"></div><span style="font-size:12px;color:var(--text-muted)">Water</span></div>
+        <div class="flex items-center gap-2"><div style="width:12px;height:12px;border-radius:50%;background:var(--accent-light);border:2px dashed var(--accent)"></div><span style="font-size:12px;color:var(--text-muted)">Check soil</span></div>
+        <div class="flex items-center gap-2"><div style="width:12px;height:12px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--border)"></div><span style="font-size:12px;color:var(--text-muted)">Rest</span></div>
+      </div>
+      <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:12px;">Typical summer schedule · Reduce by ~50% in winter</p>
+    </div>
+  </section>
+
+  <!-- ── Related Plants ── -->
+  <section class="section-tinted py-20">
+    <div class="max-w-7xl mx-auto px-10">
+      <div class="flex justify-between items-end mb-10">
+        <div>
+          <span class="text-xs font-semibold tracking-[0.2em] uppercase block mb-3" style="color:var(--accent)">Discover More</span>
+          <h2 class="text-4xl font-light" style="color:var(--text-primary)">Related <span class="cursive-accent" style="color:var(--accent)">species</span></h2>
+        </div>
+        <a href="#" class="hidden md:flex items-center gap-2 text-base font-medium transition-all duration-200 hover:gap-3" style="color:var(--accent);text-decoration:none">
+          All aroids <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+
+        <a href="#" class="related-card">
+          <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#d4e8d3,#6b9b68);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:36px;color:rgba(255,255,255,0.6)">psychiatry</span>
+          </div>
+          <div class="p-4 space-y-1">
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Aroid</div>
+            <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Monstera adansonii</div>
+            <div style="font-size:12px;color:var(--text-muted)">Swiss Cheese Vine</div>
+          </div>
+        </a>
+
+        <a href="#" class="related-card">
+          <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#c8d8f0,#6b8ab8);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:36px;color:rgba(255,255,255,0.6)">nature</span>
+          </div>
+          <div class="p-4 space-y-1">
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Aroid</div>
+            <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Philodendron gloriosum</div>
+            <div style="font-size:12px;color:var(--text-muted)">Velvet Philodendron</div>
+          </div>
+        </a>
+
+        <a href="#" class="related-card">
+          <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#e8d4e8,#9b6b9b);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:36px;color:rgba(255,255,255,0.6)">eco</span>
+          </div>
+          <div class="p-4 space-y-1">
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Aroid</div>
+            <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Anthurium crystallinum</div>
+            <div style="font-size:12px;color:var(--text-muted)">Crystal Anthurium</div>
+          </div>
+        </a>
+
+        <a href="#" class="related-card">
+          <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#d4e4d8,#5a8870);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:36px;color:rgba(255,255,255,0.6)">forest</span>
+          </div>
+          <div class="p-4 space-y-1">
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Aroid</div>
+            <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Epipremnum aureum</div>
+            <div style="font-size:12px;color:var(--text-muted)">Golden Pothos</div>
+          </div>
+        </a>
+
+        <a href="#" class="related-card">
+          <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#f0e8c8,#c8a86b);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:36px;color:rgba(255,255,255,0.6)">spa</span>
+          </div>
+          <div class="p-4 space-y-1">
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Aroid</div>
+            <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Alocasia macrorrhiza</div>
+            <div style="font-size:12px;color:var(--text-muted)">Giant Taro</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA: Add to collection ── -->
+  <section class="max-w-5xl mx-auto px-10 py-24 text-center fade-up">
+    <div class="space-y-5">
+      <span class="text-xs font-semibold tracking-[0.2em] uppercase block" style="color:var(--accent)">Track Your Plants</span>
+      <h2 class="text-4xl font-light" style="color:var(--text-primary)">
+        Add <span class="cursive-accent" style="color:var(--accent)">Monstera deliciosa</span><br/>to your collection.
+      </h2>
+      <p class="text-lg leading-7 max-w-xl mx-auto" style="color:var(--text-body)">
+        Get personalised watering reminders, seasonal alerts, and track every plant in your home — all free.
+      </p>
+      <div class="flex gap-4 justify-center flex-wrap pt-2">
+        <a href="#" class="btn-primary px-8 py-4 rounded-lg font-medium gap-2 hover:scale-[1.02] active:scale-95 transition-transform duration-200">
+          <span class="material-symbols-outlined text-base">add</span>
+          Add to my collection
+        </a>
+        <a href="#" class="btn-outline px-8 py-4 rounded-lg font-medium transition-colors duration-200">
+          Create free account
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ── -->
+<footer class="site-footer w-full">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto px-10 py-16">
+    <div class="space-y-3 text-center md:text-left">
+      <div class="cursive-accent text-2xl font-medium" style="color:var(--accent)">The Herbarium</div>
+      <p class="text-base max-w-xs" style="color:var(--text-muted)">© 2024 The Herbarium. Cultivating botanical mindfulness.</p>
+    </div>
+    <div class="flex gap-8 flex-wrap justify-center">
+      <a class="footer-link text-base transition-colors duration-300" href="#">Instagram</a>
+      <a class="footer-link text-base transition-colors duration-300" href="#">Pinterest</a>
+      <a class="footer-link text-base transition-colors duration-300" href="#">Newsletter</a>
+      <a class="footer-link text-base transition-colors duration-300" href="#">Contact Us</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Fade-up observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Accordion
+  function toggleAccordion(btn) {
+    const item = btn.closest('.accordion-item');
+    const body = item.querySelector('.accordion-body');
+    const isOpen = item.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.accordion-item.open').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.accordion-body').style.maxHeight = '0';
+    });
+
+    // Open clicked if it was closed
+    if (!isOpen) {
+      item.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  }
+
+  // Film grain
+  (function () {
+    const canvas = document.getElementById('grain-overlay');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    function drawGrain() {
+      const w = canvas.width, h = canvas.height;
+      const img = ctx.createImageData(w, h);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const v = (Math.random() * 255) | 0;
+        img.data[i] = img.data[i+1] = img.data[i+2] = v;
+        img.data[i+3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+    window.addEventListener('resize', () => { resize(); drawGrain(); });
+    resize(); drawGrain();
+  })();
+</script>
+</body>
+</html>
