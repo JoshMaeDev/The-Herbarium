@@ -187,6 +187,14 @@
   /* Section backgrounds */
   .section-tinted { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
+  /* Archive section background image */
+  .archive-section {
+    background-color: #ffffff;
+    background-size: cover, cover;
+    background-position: center, center;
+    background-repeat: no-repeat, no-repeat;
+    background-blend-mode: normal;
+  }
   /* Search bar */
   .search-input-wrap {
     background: var(--surface);
@@ -278,15 +286,7 @@
   /* Divider */
   .section-divider { border-color: var(--border); }
 
-  /* Film grain */
-  #grain-overlay {
-    position: fixed; inset: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.28;
-    mix-blend-mode: overlay;
-  }
+  /* Film grain removed */
 
   /* Quote */
   .pull-quote { color: var(--accent); }
@@ -294,7 +294,7 @@
 </style>
 </head>
 <body>
-<canvas id="grain-overlay" aria-hidden="true"></canvas>
+<!-- film grain overlay removed -->
 
 <!-- ── Navigation ── -->
 <header class="nav-bar sticky top-0 z-50 w-full">
@@ -509,7 +509,7 @@
   </section>
 
   <!-- ── Care Guides Archive ── -->
-  <section class="max-w-7xl mx-auto px-10 py-24 section-divider border-t">
+  <section class="archive-section max-w-7xl mx-auto px-10 py-24 section-divider border-t">
     <div class="flex flex-col md:flex-row gap-12 items-center">
 
       <div class="w-full md:w-5/12 space-y-6 fade-up">
@@ -680,24 +680,7 @@
     heroInput.addEventListener('blur', () => { if (!heroInput.value) closeHeroSearch(); });
   })();
 
-  // Static film grain
-  (function () {
-    const canvas = document.getElementById('grain-overlay');
-    const ctx = canvas.getContext('2d');
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    function drawGrain() {
-      const w = canvas.width, h = canvas.height;
-      const img = ctx.createImageData(w, h);
-      for (let i = 0; i < img.data.length; i += 4) {
-        const v = (Math.random() * 255) | 0;
-        img.data[i] = img.data[i+1] = img.data[i+2] = v;
-        img.data[i+3] = 255;
-      }
-      ctx.putImageData(img, 0, 0);
-    }
-    window.addEventListener('resize', () => { resize(); drawGrain(); });
-    resize(); drawGrain();
-  })();
+  /* Film grain script removed */
 </script>
 
 </body>
