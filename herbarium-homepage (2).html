@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="./treffle-config.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -656,6 +657,7 @@ img {
   background: var(--paper);
   width: 100%;
   margin: 12px 0;
+  position: relative;
 }
 .search-bar input {
   border: none;
@@ -668,6 +670,46 @@ img {
 }
 .search-bar input::placeholder { color: var(--ink-muted); font-style: italic; }
 .search-bar svg { flex-shrink: 0; opacity: 0.5; }
+.search-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  background: rgba(249,247,242,0.98);
+  border: 1px solid var(--rule-thick);
+  box-shadow: 0 14px 30px rgba(13,13,11,0.08);
+  z-index: 20;
+  max-height: 220px;
+  overflow: auto;
+}
+.search-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: 'Libre Baskerville', serif;
+}
+.search-suggestion:last-child { border-bottom: none; }
+.search-suggestion:hover { background: rgba(46,92,46,0.04); }
+.search-suggestion-label {
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.search-suggestion-sub {
+  display: block;
+  font-size: 10px;
+  color: var(--ink-light);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 </style>
 </head>
 <body>
@@ -745,11 +787,10 @@ img {
 
       <!-- COL 2: Lead story -->
       <div class="hero-col">
-        <div class="kicker kicker-green" style="m argin-bottom:6px">species profile</div>
+        <div class="kicker kicker-green" style="margin-bottom:6px">species profile</div>
         <div class="img-ph" style="aspect-ratio:4/3; margin-bottom:10px;">
           <img src="Images/WallPlants.jpg" alt="Coffee plants growing in a lush setting"/>
         </div>
-        <span class="img-caption">Coffea arabica thriving in its native Ethiopian highland environment, where altitude and rainfall create ideal conditions.</span>
         <div class="hed hed-xl" style="margin-top:10px; margin-bottom:8px">The Coffee Plant:<br/><em>A Botanical Study</em></div>
         <div class="dek">From Ethiopian highlands to your windowsill — understanding Coffea arabica means growing it with intention. Most houseplant guides skip the ecology entirely. We don't.</div>
         <div style="margin-top:12px; display:flex; align-items:center; gap:12px;">
@@ -782,9 +823,10 @@ img {
         <div class="rule" style="margin-bottom:12px"></div>
 
         <div class="kicker" style="margin-bottom:8px">Search the archive</div>
-        <div class="search-bar">
+        <div class="search-bar" style="position:relative;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input type="text" placeholder="Search by common or scientific name…"/>
+          <input id="homepage-search-input" type="text" placeholder="Search by common or scientific name…" autocomplete="off"/>
+          <div id="homepage-search-dropdown" class="search-suggestions" hidden></div>
         </div>
         <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
           <span class="tag" style="font-size:9px; cursor:pointer;">Pothos</span>
@@ -1044,6 +1086,106 @@ img {
 </div>
 
 <script>
+  const homepageSearchInput = document.getElementById('homepage-search-input');
+  const homepageSearchDropdown = document.getElementById('homepage-search-dropdown');
+  let homepageSearchDebounce = null;
+
+  function buildPlantPayload(plant) {
+    const scientificName = plant?.scientific_name || plant?.common_name || 'Plant';
+    const commonName = plant?.common_name || scientificName;
+    return {
+      id: plant?.id ?? null,
+      common_name: commonName,
+      scientific_name: scientificName,
+      image_url: plant?.image_url || '',
+      family: plant?.family || 'Unknown',
+      genus: plant?.genus || (scientificName.includes(' ') ? scientificName.split(' ')[0] : 'Unknown'),
+      authority: plant?.authority || '–',
+      native_range: plant?.native_range || 'Tropical regions'
+    };
+  }
+
+  function renderHomepageSuggestions(items) {
+    if (!homepageSearchDropdown) return;
+    homepageSearchDropdown.innerHTML = '';
+
+    if (!items || !items.length) {
+      homepageSearchDropdown.hidden = true;
+      return;
+    }
+
+    items.forEach((plant) => {
+      const option = document.createElement('button');
+      option.type = 'button';
+      option.className = 'search-suggestion';
+      option.innerHTML = `
+        <span>
+          <span class="search-suggestion-label">${plant.common_name || plant.scientific_name || 'Unknown plant'}</span>
+          <span class="search-suggestion-sub">${plant.scientific_name || 'Plant species'}</span>
+        </span>
+        <span aria-hidden="true">→</span>
+      `;
+
+      option.addEventListener('click', () => {
+        const payload = buildPlantPayload(plant);
+        localStorage.setItem('herbarium-selected-plant', JSON.stringify(payload));
+        const targetUrl = new URL('plant-profile.html', window.location.href);
+        if (payload.id) {
+          targetUrl.searchParams.set('plant', String(payload.id));
+        }
+        window.location.href = targetUrl.toString();
+      });
+
+      homepageSearchDropdown.appendChild(option);
+    });
+
+    homepageSearchDropdown.hidden = false;
+  }
+
+  async function fetchTrefflePlants(query) {
+    if (!query || query.trim().length < 2) {
+      return [];
+    }
+
+    try {
+      const response = await fetch(`/api/plants/search?q=${encodeURIComponent(query.trim())}&limit=6`);
+      if (!response.ok) {
+        return [];
+      }
+      const data = await response.json();
+      return Array.isArray(data.data) ? data.data : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function handleHomepageSearch() {
+    const query = homepageSearchInput?.value.trim();
+    if (homepageSearchDebounce) {
+      clearTimeout(homepageSearchDebounce);
+    }
+
+    if (!query) {
+      homepageSearchDropdown.hidden = true;
+      return;
+    }
+
+    homepageSearchDebounce = setTimeout(async () => {
+      const items = await fetchTrefflePlants(query);
+      renderHomepageSuggestions(items);
+    }, 250);
+  }
+
+  if (homepageSearchInput) {
+    homepageSearchInput.addEventListener('input', handleHomepageSearch);
+    document.addEventListener('click', (event) => {
+      const clickedInside = homepageSearchInput.contains(event.target) || (homepageSearchDropdown && homepageSearchDropdown.contains(event.target));
+      if (!clickedInside) {
+        homepageSearchDropdown.hidden = true;
+      }
+    });
+  }
+
   // Simple intersection observer for subtle fade-in
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {

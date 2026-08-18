@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="./treffle-config.js"></script>
 <script id="tailwind-config">
   tailwind.config = {
     darkMode: "class",
@@ -252,6 +253,7 @@
 
   /* Search bar in hero */
   .search-bar-inline {
+    position: relative;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 999px;
@@ -263,6 +265,44 @@
   .search-bar-inline:focus-within { box-shadow: 0 0 0 2px rgba(74,101,74,0.25); border-color: var(--accent); }
   .search-bar-inline input { background:none; border:none; outline:none; flex:1; font-size:14px; color: var(--text-primary); font-family: 'Hanken Grotesk', sans-serif; }
   .search-bar-inline input::placeholder { color: var(--text-muted); }
+  .search-suggestions {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 14px 30px rgba(17, 24, 39, 0.08);
+    z-index: 30;
+    overflow: hidden;
+  }
+  .search-suggestion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Hanken Grotesk', sans-serif;
+    color: var(--text-primary);
+  }
+  .search-suggestion:last-child { border-bottom: none; }
+  .search-suggestion:hover { background: var(--surface-mid); }
+  .search-suggestion-label {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .search-suggestion-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
 
   /* Film grain */
   #grain-overlay {
@@ -341,10 +381,11 @@
     <div class="max-w-7xl mx-auto px-10 flex flex-col md:flex-row gap-4 items-center justify-between">
       <div class="search-bar-inline w-full md:w-auto flex-grow md:max-w-lg">
         <span class="material-symbols-outlined text-base mr-2" style="color:var(--text-muted)">search</span>
-        <input type="text" placeholder="Search 1,200+ plants by name or type…" value="Monstera deliciosa" />
-        <button class="btn-primary px-4 py-2 rounded-full text-sm font-semibold ml-2 gap-1">
+        <input id="plant-profile-search-input" type="text" autocomplete="off" placeholder="Search plants by name or type…" value="Monstera deliciosa" />
+        <button id="plant-profile-search-button" class="btn-primary px-4 py-2 rounded-full text-sm font-semibold ml-2 gap-1">
           Search
         </button>
+        <div id="plant-profile-search-dropdown" class="search-suggestions" hidden></div>
       </div>
       <div class="flex gap-2 flex-wrap justify-center md:justify-end">
         <span class="tag-pill-neutral cursor-pointer hover:bg-gray-200 transition-colors">Indoor</span>
@@ -372,8 +413,7 @@
       <!-- LEFT: Gallery -->
       <div class="w-full lg:w-5/12 space-y-3 fade-up">
         <div class="gallery-main" id="gallery-main">
-          <!-- Placeholder gradient image -->
-          <div style="width:100%;height:100%;background:linear-gradient(135deg,#d4e8d3 0%,#a8c8a5 40%,#6b9b68 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;">
+          <div id="plant-image-panel" style="width:100%;height:100%;background:linear-gradient(135deg,#d4e8d3 0%,#a8c8a5 40%,#6b9b68 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;">
             <span class="material-symbols-outlined" style="font-size:72px;color:rgba(255,255,255,0.7)">psychiatry</span>
             <span style="color:rgba(255,255,255,0.8);font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">Plant image placeholder</span>
           </div>
@@ -410,7 +450,7 @@
 
         <!-- Title block -->
         <div class="space-y-3">
-          <div class="flex items-center gap-3 flex-wrap">
+          <div class="flex items-center gap-3 flex-wrap" id="plant-tags">
             <span class="tag-pill">Tropical</span>
             <span class="tag-pill-neutral">Aroid</span>
             <span class="badge-toxic">
@@ -419,10 +459,10 @@
             </span>
           </div>
           <h1 style="font-size:clamp(36px,5vw,56px);line-height:1.05;font-weight:300;color:var(--text-primary)">
-            Monstera<br/>
-            <span class="cursive-accent" style="color:var(--accent)">deliciosa</span>
+            <span id="plant-name">Monstera</span><br/>
+            <span id="plant-scientific" class="cursive-accent" style="color:var(--accent)">deliciosa</span>
           </h1>
-          <p style="color:var(--text-muted);font-size:15px;font-weight:500;">Swiss Cheese Plant &nbsp;·&nbsp; Split-Leaf Philodendron</p>
+          <p id="plant-common-name" style="color:var(--text-muted);font-size:15px;font-weight:500;">Swiss Cheese Plant &nbsp;·&nbsp; Split-Leaf Philodendron</p>
         </div>
 
         <!-- Rating + actions row -->
@@ -456,7 +496,7 @@
         <hr style="border-color:var(--border)"/>
 
         <!-- Quick bio -->
-        <p style="color:var(--text-body);font-size:16px;line-height:1.75;">
+        <p id="plant-bio" style="color:var(--text-body);font-size:16px;line-height:1.75;">
           The Monstera deliciosa — colloquially the Swiss Cheese Plant — is a flowering vine from the tropical forests of southern Mexico and Panama. Celebrated for its dramatic, naturally fenestrated leaves, it has become one of the most recognisable houseplants in the world. In the wild it climbs trees using aerial roots; in cultivation it rewards minimal effort with maximum spectacle.
         </p>
 
@@ -467,8 +507,8 @@
             <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">water_drop</span></div>
             <div>
               <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Watering</div>
-              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Every 1–2 wks</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Let topsoil dry out</div>
+              <div id="watering-stat" style="font-size:15px;font-weight:500;color:var(--text-primary)">Every 1–2 wks</div>
+              <div id="watering-detail" style="font-size:12px;color:var(--text-muted);margin-top:2px;">Let topsoil dry out</div>
             </div>
           </div>
 
@@ -476,8 +516,8 @@
             <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">light_mode</span></div>
             <div>
               <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Light</div>
-              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Bright indirect</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">No direct sun</div>
+              <div id="light-stat" style="font-size:15px;font-weight:500;color:var(--text-primary)">Bright indirect</div>
+              <div id="light-detail" style="font-size:12px;color:var(--text-muted);margin-top:2px;">No direct sun</div>
             </div>
           </div>
 
@@ -485,8 +525,8 @@
             <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">thermostat</span></div>
             <div>
               <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Temperature</div>
-              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">18 – 30 °C</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Frost-sensitive</div>
+              <div id="temp-stat" style="font-size:15px;font-weight:500;color:var(--text-primary)">18 – 30 °C</div>
+              <div id="temp-detail" style="font-size:12px;color:var(--text-muted);margin-top:2px;">Frost-sensitive</div>
             </div>
           </div>
 
@@ -494,8 +534,8 @@
             <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">humidity_mid</span></div>
             <div>
               <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Humidity</div>
-              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">50 – 70 %</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Mist occasionally</div>
+              <div id="humidity-stat" style="font-size:15px;font-weight:500;color:var(--text-primary)">50 – 70 %</div>
+              <div id="humidity-detail" style="font-size:12px;color:var(--text-muted);margin-top:2px;">Mist occasionally</div>
             </div>
           </div>
 
@@ -503,8 +543,8 @@
             <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">grass</span></div>
             <div>
               <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Soil</div>
-              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Well-draining</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">pH 5.5 – 7.0</div>
+              <div id="soil-stat" style="font-size:15px;font-weight:500;color:var(--text-primary)">Well-draining</div>
+              <div id="soil-detail" style="font-size:12px;color:var(--text-muted);margin-top:2px;">pH 5.5 – 7.0</div>
             </div>
           </div>
 
@@ -512,8 +552,8 @@
             <div class="care-icon-wrap"><span class="material-symbols-outlined text-base">potted_plant</span></div>
             <div>
               <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;">Repotting</div>
-              <div style="font-size:15px;font-weight:500;color:var(--text-primary)">Every 2 years</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Spring preferred</div>
+              <div id="repotting-stat" style="font-size:15px;font-weight:500;color:var(--text-primary)">Every 2 years</div>
+              <div id="repotting-detail" style="font-size:12px;color:var(--text-muted);margin-top:2px;">Spring preferred</div>
             </div>
           </div>
 
@@ -545,23 +585,23 @@
         <div class="space-y-0">
           <div class="flex justify-between py-3" style="border-bottom:1px solid var(--border)">
             <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Family</span>
-            <span style="font-size:15px;color:var(--text-primary);font-weight:500">Araceae</span>
+            <span id="plant-family" style="font-size:15px;color:var(--text-primary);font-weight:500">Araceae</span>
           </div>
           <div class="flex justify-between py-3" style="border-bottom:1px solid var(--border)">
             <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Genus</span>
-            <span style="font-size:15px;color:var(--text-primary);font-weight:500;font-style:italic">Monstera</span>
+            <span id="plant-genus" style="font-size:15px;color:var(--text-primary);font-weight:500;font-style:italic">Monstera</span>
           </div>
           <div class="flex justify-between py-3" style="border-bottom:1px solid var(--border)">
             <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Species</span>
-            <span style="font-size:15px;color:var(--text-primary);font-weight:500;font-style:italic">M. deliciosa</span>
+            <span id="plant-species" style="font-size:15px;color:var(--text-primary);font-weight:500;font-style:italic">M. deliciosa</span>
           </div>
           <div class="flex justify-between py-3" style="border-bottom:1px solid var(--border)">
             <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Authority</span>
-            <span style="font-size:15px;color:var(--text-primary);font-weight:500">Liebm., 1849</span>
+            <span id="plant-authority" style="font-size:15px;color:var(--text-primary);font-weight:500">Liebm., 1849</span>
           </div>
           <div class="flex justify-between py-3">
             <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Native Range</span>
-            <span style="font-size:15px;color:var(--text-primary);font-weight:500">S. Mexico → Panama</span>
+            <span id="plant-range" style="font-size:15px;color:var(--text-primary);font-weight:500">S. Mexico → Panama</span>
           </div>
         </div>
       </div>
@@ -965,6 +1005,212 @@
     window.addEventListener('resize', () => { resize(); drawGrain(); });
     resize(); drawGrain();
   })();
+
+  // Treffle search + profile rendering
+  const profileSearchInput = document.getElementById('plant-profile-search-input');
+  const profileSearchButton = document.getElementById('plant-profile-search-button');
+  const profileSearchDropdown = document.getElementById('plant-profile-search-dropdown');
+  let profileSearchDebounce = null;
+
+  function buildPlantPayload(plant) {
+    const scientificName = plant?.scientific_name || plant?.common_name || 'Plant';
+    const commonName = plant?.common_name || scientificName;
+    return {
+      id: plant?.id ?? null,
+      common_name: commonName,
+      scientific_name: scientificName,
+      image_url: plant?.image_url || '',
+      family: plant?.family || 'Unknown',
+      genus: plant?.genus || (scientificName.includes(' ') ? scientificName.split(' ')[0] : 'Unknown'),
+      authority: plant?.authority || '–',
+      native_range: plant?.native_range || 'Tropical regions'
+    };
+  }
+
+  function renderSuggestions(items, targetDropdown) {
+    if (!targetDropdown) return;
+    targetDropdown.innerHTML = '';
+
+    if (!items || !items.length) {
+      targetDropdown.hidden = true;
+      return;
+    }
+
+    items.forEach((plant) => {
+      const option = document.createElement('button');
+      option.type = 'button';
+      option.className = 'search-suggestion';
+      option.innerHTML = `
+        <span>
+          <span class="search-suggestion-label">${plant.common_name || plant.scientific_name || 'Unknown plant'}</span><br>
+          <span class="search-suggestion-sub">${plant.scientific_name || 'Plant species'}</span>
+        </span>
+        <span class="material-symbols-outlined" style="color:var(--text-muted)">arrow_forward</span>
+      `;
+      option.addEventListener('click', () => {
+        const payload = buildPlantPayload(plant);
+        localStorage.setItem('herbarium-selected-plant', JSON.stringify(payload));
+        profileSearchInput.value = payload.common_name;
+        targetDropdown.hidden = true;
+        loadPlantProfile(payload.id);
+      });
+      targetDropdown.appendChild(option);
+    });
+
+    targetDropdown.hidden = false;
+  }
+
+  async function fetchTrefflePlants(query) {
+    if (!query || query.trim().length < 2) {
+      return [];
+    }
+
+    try {
+      const response = await fetch(`/api/plants/search?q=${encodeURIComponent(query.trim())}&limit=6`);
+      if (!response.ok) {
+        return [];
+      }
+      const data = await response.json();
+      return Array.isArray(data.data) ? data.data : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function updateProfileImage(imageUrl) {
+    const panel = document.getElementById('plant-image-panel');
+    if (!panel) return;
+
+    if (imageUrl) {
+      panel.innerHTML = `<img src="${imageUrl}" alt="Plant" style="width:100%;height:100%;object-fit:cover;display:block;" />`;
+    } else {
+      panel.innerHTML = `
+        <span class="material-symbols-outlined" style="font-size:72px;color:rgba(255,255,255,0.7)">psychiatry</span>
+        <span style="color:rgba(255,255,255,0.8);font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">Plant image placeholder</span>
+      `;
+    }
+  }
+
+  function setPlantText(id, content) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.textContent = content;
+    }
+  }
+
+  function renderPlantProfile(plant) {
+    if (!plant) return;
+
+    const commonName = plant.common_name || plant.scientific_name || 'Plant';
+    const scientificName = plant.scientific_name || commonName;
+    const genusName = plant.genus || scientificName.split(' ')[0] || 'Plant';
+    const speciesName = scientificName.includes(' ') ? scientificName : `${genusName} ${commonName}`;
+
+    setPlantText('plant-name', genusName);
+    setPlantText('plant-scientific', scientificName.replace(`${genusName} `, ''));
+    setPlantText('plant-common-name', `${commonName} · ${plant.family || 'Tropical plant'}`);
+    setPlantText('plant-bio', `The ${commonName} is a distinctive ${plant.family ? plant.family.toLowerCase() : 'tropical'} plant admired for its striking foliage and broad botanical appeal. Grown for both ornamental value and plant collection interest, it responds best to bright indirect light, a well-draining substrate, and careful watering that balances moisture with airflow.`);
+    setPlantText('plant-family', plant.family || 'Unknown');
+    setPlantText('plant-genus', genusName || 'Unknown');
+    setPlantText('plant-species', scientificName || commonName);
+    setPlantText('plant-authority', plant.authority || '–');
+    setPlantText('plant-range', plant.native_range || 'Tropical regions');
+
+    document.getElementById('plant-tags').innerHTML = `
+      <span class="tag-pill">${plant.genus || 'Tropical'}</span>
+      <span class="tag-pill-neutral">${plant.family || 'Plant'}</span>
+      <span class="badge-toxic"><span class="material-symbols-outlined" style="font-size:14px">warning</span> Toxic to pets</span>
+    `;
+
+    updateProfileImage(plant.image_url || '');
+    if (profileSearchInput) {
+      profileSearchInput.value = commonName;
+    }
+  }
+
+  async function loadPlantProfile(id) {
+    if (!id) {
+      renderPlantProfile(JSON.parse(localStorage.getItem('herbarium-selected-plant') || '{}'));
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/plants/${encodeURIComponent(id)}`);
+      if (!response.ok) {
+        const stored = JSON.parse(localStorage.getItem('herbarium-selected-plant') || '{}');
+        renderPlantProfile(stored);
+        return;
+      }
+      const data = await response.json();
+      const plant = data.data || {};
+      const payload = buildPlantPayload({ ...plant, id: plant.id || id });
+      localStorage.setItem('herbarium-selected-plant', JSON.stringify(payload));
+      renderPlantProfile(payload);
+    } catch (error) {
+      const stored = JSON.parse(localStorage.getItem('herbarium-selected-plant') || '{}');
+      renderPlantProfile(stored);
+    }
+  }
+
+  function handleSearchTyping() {
+    const query = profileSearchInput.value.trim();
+    if (profileSearchDebounce) {
+      clearTimeout(profileSearchDebounce);
+    }
+
+    if (!query) {
+      profileSearchDropdown.hidden = true;
+      return;
+    }
+
+    profileSearchDebounce = setTimeout(async () => {
+      const items = await fetchTrefflePlants(query);
+      renderSuggestions(items, profileSearchDropdown);
+    }, 250);
+  }
+
+  if (profileSearchInput) {
+    profileSearchInput.addEventListener('input', handleSearchTyping);
+    profileSearchButton.addEventListener('click', async () => {
+      const query = profileSearchInput.value.trim();
+      const items = await fetchTrefflePlants(query);
+      if (items.length) {
+        const selected = items[0];
+        const payload = buildPlantPayload(selected);
+        localStorage.setItem('herbarium-selected-plant', JSON.stringify(payload));
+        loadPlantProfile(selected.id);
+        return;
+      }
+      profileSearchDropdown.hidden = true;
+    });
+  }
+
+  document.addEventListener('click', (event) => {
+    if (!profileSearchInput || !profileSearchDropdown) return;
+    const clickedInside = profileSearchInput.contains(event.target) || profileSearchDropdown.contains(event.target);
+    if (!clickedInside) {
+      profileSearchDropdown.hidden = true;
+    }
+  });
+
+  const queryPlantId = new URLSearchParams(window.location.search).get('plant');
+  const storedPlant = JSON.parse(localStorage.getItem('herbarium-selected-plant') || 'null');
+
+  if (queryPlantId) {
+    loadPlantProfile(queryPlantId);
+  } else if (storedPlant && storedPlant.id) {
+    loadPlantProfile(storedPlant.id);
+  } else {
+    renderPlantProfile({
+      common_name: 'Monstera deliciosa',
+      scientific_name: 'Monstera deliciosa',
+      family: 'Araceae',
+      genus: 'Monstera',
+      authority: 'Liebm., 1849',
+      native_range: 'S. Mexico → Panama',
+      image_url: ''
+    });
+  }
 </script>
 </body>
 </html>
