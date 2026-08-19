@@ -37,24 +37,57 @@
 </script>
 <style>
   :root {
-    --bg:           #ffffff;
-    --surface:      #ffffff;
-    --surface-mid:  #f7f7f8;
-    --surface-high: #f2f2f3;
-    --border:       rgba(0,0,0,0.08);
-    --text-primary: #000000;
-    --text-body:    #111827;
-    --text-muted:   #6b7280;
-    --accent:       #4a654a;
-    --accent-dim:   #6b8a6b;
-    --accent-light: #e8f0e8;
+    --bg:           #f9f7f2;
+    --paper:        #f9f7f2;
+    --paper-mid:    #f1ede4;
+    --paper-dark:   #e8e2d6;
+    --surface:      #fffdf9;
+    --surface-mid:  #f3efe7;
+    --surface-high: #eee8de;
+    --border:       rgba(13,13,11,0.15);
+    --rule-thick:   rgba(13,13,11,0.85);
+    --text-primary: #0d0d0b;
+    --text-body:    #2a2a27;
+    --text-muted:   #6b6b63;
+    --accent:       #2e5c2e;
+    --accent-dim:   #4a7c4a;
+    --accent-light: #e8f0e4;
     --accent-text:  #ffffff;
-    --pill-bg:      #f3f4f6;
+    --pill-bg:      #f0eee7;
     --pill-text:    #111827;
+    --ink:          #0d0d0b;
   }
 
   * { box-sizing: border-box; }
-  body { background-color: var(--bg); color: var(--text-primary); font-family: 'Hanken Grotesk', sans-serif; }
+  body {
+    background: var(--paper);
+    color: var(--text-primary);
+    font-family: 'Libre Baskerville', serif;
+    position: relative;
+    isolation: isolate;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    opacity: 0.09;
+    mix-blend-mode: multiply;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(ellipse at center, rgba(249,247,242,0) 58%, rgba(235,229,217,0.14) 100%), linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+    opacity: 0.9;
+  }
 
   .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
@@ -67,13 +100,83 @@
 
   /* Nav */
   .nav-bar {
-    background: rgba(255,255,255,0.95);
+    background: rgba(249,247,242,0.96);
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(6px);
+    position: relative;
+    z-index: 2;
   }
-  .nav-link { color: var(--text-body); text-decoration: none; }
+  .nav-link { color: var(--text-body); text-decoration: none; font-family: 'Jost', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; font-size: 11px; }
   .nav-link:hover { color: var(--accent); }
   .nav-link-active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+  .page-shell {
+    position: relative;
+    z-index: 1;
+    background: var(--paper);
+    border-top: 1px solid var(--border);
+  }
+  .newspaper-masthead {
+    text-align: center;
+    padding: 18px 32px 10px;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper);
+  }
+  .newspaper-ornament {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    letter-spacing: 0.5em;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .newspaper-title {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 7vw, 96px);
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .newspaper-sub {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .newspaper-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    margin-top: 12px;
+    border-top: 1px solid var(--border);
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .newspaper-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    background: var(--paper);
+  }
+  .newspaper-nav a {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 9px 18px;
+    white-space: nowrap;
+    border-right: 1px solid var(--border);
+  }
+  .newspaper-nav a.active { color: var(--ink); border-bottom: 2px solid var(--ink); }
   .nav-icon { color: var(--text-primary); background: none; border: none; cursor: pointer; }
   .nav-icon:hover { background: var(--surface-mid); border-radius: 9999px; }
 
@@ -360,21 +463,27 @@
 
 <!-- ── Navigation ── -->
 <header class="nav-bar sticky top-0 z-50 w-full">
-  <nav class="flex justify-between items-center px-10 py-4 max-w-7xl mx-auto">
-    <a href="#" class="cursive-accent text-2xl font-medium" style="color:var(--accent); text-decoration:none">The Herbarium</a>
-    <div class="hidden md:flex gap-8 items-center">
-      <a class="nav-link-active font-medium text-lg pb-1 transition-colors duration-200" href="#">Explore Plants</a>
-      <a class="nav-link font-medium text-lg transition-colors duration-200" href="#">Care Guides</a>
-      <a class="nav-link font-medium text-lg transition-colors duration-200" href="#">Our Story</a>
+  <div class="newspaper-masthead">
+    <span class="newspaper-title">The Herbarium</span>
+    <div class="newspaper-sub">A botanical index</div>
+    <div class="newspaper-meta">
+      <span>Issue No. 18</span>
+      <span>Wednesday • 19 Aug 2026</span>
+      <span>Botanical Notes</span>
     </div>
-    <div class="flex items-center gap-3">
-      <button class="nav-icon material-symbols-outlined p-2 rounded-full transition-colors active:scale-95 duration-200">search</button>
-      <a href="#" class="btn-primary hidden md:inline-flex px-5 py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-95 transition-transform duration-200">Sign In</a>
-    </div>
+  </div>
+  <nav class="newspaper-nav">
+    <a href="#" class="active">Explore Plants</a>
+    <a href="#">Care Guides</a>
+    <a href="#">Seasonal Study</a>
+    <a href="#">Plant Index</a>
+    <a href="#">Our Story</a>
+    <div style="flex:1"></div>
+    <a href="#">Sign In</a>
   </nav>
 </header>
 
-<main>
+<main class="page-shell">
 
   <!-- ── Search Bar Strip ── -->
   <div class="section-tinted py-6">
