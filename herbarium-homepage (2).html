@@ -4,9 +4,9 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>The Herbarium</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 <script src="./treffle-config.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,7 +85,7 @@ body::after {
   font-family: 'Playfair Display', serif;
   color: var(--ink);
   line-height: 1.1;
-  font-weight: 700;
+  font-weight: 500;
 }
 .hed-xl  { font-size: clamp(36px, 4vw, 56px); }
 .hed-lg  { font-size: clamp(24px, 2.5vw, 34px); }
@@ -205,7 +205,7 @@ img {
 .masthead-name {
   font-family: 'Playfair Display', serif;
   font-size: clamp(52px, 7vw, 96px);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 0.95;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -718,10 +718,8 @@ img {
 
   <!-- MASTHEAD -->
   <div class="masthead">
-    <span class="masthead-name">The Herbarium</span>
-    <div class="masthead-meta">
-      <span>Thursday, June 18, 2026</span>
-      <span>Living botany, curated</span>
+    <span class="masthead-name">The Herbarium.</span>
+      <span>Living botany</span>
     </div>
   </div>
 
@@ -806,6 +804,20 @@ img {
 
       <!-- COL 3: Secondary story + search -->
       <div class="hero-col">
+        <div class="kicker" style="margin-bottom:8px">Search the archive</div>
+        <div class="search-bar" style="position:relative;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input id="homepage-search-input" type="text" placeholder="Search by common or scientific name…" autocomplete="off"/>
+          <div id="homepage-search-dropdown" class="search-suggestions" hidden></div>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; margin-bottom:14px;">
+          <span class="tag" style="font-size:9px; cursor:pointer;">Pothos</span>
+          <span class="tag" style="font-size:9px; cursor:pointer;">Fern</span>
+          <span class="tag" style="font-size:9px; cursor:pointer;">Succulent</span>
+          <span class="tag" style="font-size:9px; cursor:pointer;">Orchid</span>
+          <span class="tag" style="font-size:9px; cursor:pointer;">Ficus</span>
+        </div>
+
         <div class="kicker" style="margin-bottom:8px">Also this week</div>
 
         <div class="rule" style="margin-bottom:12px"></div>
@@ -819,22 +831,6 @@ img {
         <div class="hed hed-md" style="margin-bottom:6px">Why Your Monstera Won't Fenestrate</div>
         <div class="body-copy" style="margin-bottom:8px">Fenestration isn't guaranteed — it's earned. Light intensity, maturity, and root health all play a role. We examine the overlooked factors.</div>
         <div class="byline" style="margin-bottom:14px">Indoor · 5 min read →</div>
-
-        <div class="rule" style="margin-bottom:12px"></div>
-
-        <div class="kicker" style="margin-bottom:8px">Search the archive</div>
-        <div class="search-bar" style="position:relative;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input id="homepage-search-input" type="text" placeholder="Search by common or scientific name…" autocomplete="off"/>
-          <div id="homepage-search-dropdown" class="search-suggestions" hidden></div>
-        </div>
-        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
-          <span class="tag" style="font-size:9px; cursor:pointer;">Pothos</span>
-          <span class="tag" style="font-size:9px; cursor:pointer;">Fern</span>
-          <span class="tag" style="font-size:9px; cursor:pointer;">Succulent</span>
-          <span class="tag" style="font-size:9px; cursor:pointer;">Orchid</span>
-          <span class="tag" style="font-size:9px; cursor:pointer;">Ficus</span>
-        </div>
       </div>
 
       <!-- COL 4: Featured panel -->
