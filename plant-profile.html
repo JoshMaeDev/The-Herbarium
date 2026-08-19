@@ -603,6 +603,30 @@
             <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Native Range</span>
             <span id="plant-range" style="font-size:15px;color:var(--text-primary);font-weight:500">S. Mexico → Panama</span>
           </div>
+          <div class="py-3" style="border-top:1px solid var(--border)">
+            <div style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Botanical description</div>
+            <div id="plant-description" style="font-size:14px;color:var(--text-primary);line-height:1.7;">A tropical foliage plant known for broad leaves and ornamental structure.</div>
+          </div>
+          <div class="flex justify-between py-3" style="border-top:1px solid var(--border)">
+            <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Year</span>
+            <span id="plant-year" style="font-size:15px;color:var(--text-primary);font-weight:500">1849</span>
+          </div>
+          <div class="py-3" style="border-top:1px solid var(--border)">
+            <div style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Bibliography</div>
+            <div id="plant-bibliography" style="font-size:13px;color:var(--text-primary);line-height:1.6;word-break:break-word;">Plant reference record</div>
+          </div>
+          <div class="flex justify-between py-3" style="border-top:1px solid var(--border)">
+            <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Slug</span>
+            <span id="plant-slug" style="font-size:15px;color:var(--text-primary);font-weight:500;word-break:break-word;">monstera-deliciosa</span>
+          </div>
+          <div class="flex justify-between py-3" style="border-top:1px solid var(--border)">
+            <span style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Status</span>
+            <span id="plant-status" style="font-size:15px;color:var(--text-primary);font-weight:500">accepted</span>
+          </div>
+          <div class="py-3" style="border-top:1px solid var(--border)">
+            <div style="font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Links / metadata</div>
+            <div id="plant-links" style="font-size:13px;color:var(--text-primary);line-height:1.6;word-break:break-word;">Plant API metadata</div>
+          </div>
         </div>
       </div>
 
@@ -1015,15 +1039,32 @@
   function buildPlantPayload(plant) {
     const scientificName = plant?.scientific_name || plant?.common_name || 'Plant';
     const commonName = plant?.common_name || scientificName;
+    const familyName = typeof plant?.family === 'string' ? plant.family : plant?.family?.name || 'Unknown';
+    const genusName = typeof plant?.genus === 'string' ? plant.genus : plant?.genus?.name || (scientificName.includes(' ') ? scientificName.split(' ')[0] : 'Unknown');
+    const links = plant?.links || {};
+
     return {
       id: plant?.id ?? null,
       common_name: commonName,
       scientific_name: scientificName,
       image_url: plant?.image_url || '',
-      family: plant?.family || 'Unknown',
-      genus: plant?.genus || (scientificName.includes(' ') ? scientificName.split(' ')[0] : 'Unknown'),
-      authority: plant?.authority || '–',
-      native_range: plant?.native_range || 'Tropical regions'
+      family: familyName,
+      genus: genusName,
+      authority: plant?.authority || plant?.author || '–',
+      native_range: plant?.native_range || plant?.native_range_text || 'Tropical regions',
+      slug: plant?.slug || '',
+      year: plant?.year || '',
+      bibliography: plant?.bibliography || '',
+      family_common_name: plant?.family_common_name || '',
+      status: plant?.status || '',
+      rank: plant?.rank || '',
+      links: {
+        self: links.self || '',
+        genus: links.genus || '',
+        family: links.family || '',
+        species: links.species || '',
+        plants: links.plants || ''
+      }
     };
   }
 
@@ -1104,21 +1145,36 @@
     const commonName = plant.common_name || plant.scientific_name || 'Plant';
     const scientificName = plant.scientific_name || commonName;
     const genusName = plant.genus || scientificName.split(' ')[0] || 'Plant';
-    const speciesName = scientificName.includes(' ') ? scientificName : `${genusName} ${commonName}`;
+    const familyName = plant.family || 'Unknown';
+    const authorName = plant.authority || plant.author || '–';
+    const nativeRange = plant.native_range || plant.native_range_text || 'Tropical regions';
+    const genusLabel = genusName && scientificName.includes(' ') ? genusName : 'Plant';
+    const yearValue = plant.year || '–';
+    const bibliographyValue = plant.bibliography || 'No bibliography metadata available.';
+    const slugValue = plant.slug || 'n/a';
+    const statusValue = plant.status || 'unknown';
+    const linksValue = plant.links && Object.keys(plant.links).length ? Object.entries(plant.links).map(([key, value]) => `${key}: ${value || 'n/a'}`).join(' • ') : 'No linked metadata available.';
+    const descriptionValue = plant.botanical_description || plant.description || `The ${commonName} is a ${String(familyName).toLowerCase()} plant valued for its dramatic foliage and strong ornamental presence. It is commonly grown as a statement houseplant and thrives in warm, bright conditions with consistent moisture and airflow around the root zone.`;
 
-    setPlantText('plant-name', genusName);
-    setPlantText('plant-scientific', scientificName.replace(`${genusName} `, ''));
-    setPlantText('plant-common-name', `${commonName} · ${plant.family || 'Tropical plant'}`);
-    setPlantText('plant-bio', `The ${commonName} is a distinctive ${plant.family ? plant.family.toLowerCase() : 'tropical'} plant admired for its striking foliage and broad botanical appeal. Grown for both ornamental value and plant collection interest, it responds best to bright indirect light, a well-draining substrate, and careful watering that balances moisture with airflow.`);
-    setPlantText('plant-family', plant.family || 'Unknown');
-    setPlantText('plant-genus', genusName || 'Unknown');
+    setPlantText('plant-name', genusLabel);
+    setPlantText('plant-scientific', scientificName.replace(`${genusLabel} `, ''));
+    setPlantText('plant-common-name', `${commonName} · ${familyName}`);
+    setPlantText('plant-bio', descriptionValue);
+    setPlantText('plant-family', familyName);
+    setPlantText('plant-genus', genusLabel || 'Unknown');
     setPlantText('plant-species', scientificName || commonName);
-    setPlantText('plant-authority', plant.authority || '–');
-    setPlantText('plant-range', plant.native_range || 'Tropical regions');
+    setPlantText('plant-authority', authorName);
+    setPlantText('plant-range', nativeRange);
+    setPlantText('plant-description', descriptionValue);
+    setPlantText('plant-year', String(yearValue));
+    setPlantText('plant-bibliography', bibliographyValue);
+    setPlantText('plant-slug', slugValue);
+    setPlantText('plant-status', statusValue);
+    setPlantText('plant-links', linksValue);
 
     document.getElementById('plant-tags').innerHTML = `
-      <span class="tag-pill">${plant.genus || 'Tropical'}</span>
-      <span class="tag-pill-neutral">${plant.family || 'Plant'}</span>
+      <span class="tag-pill">${genusLabel}</span>
+      <span class="tag-pill-neutral">${familyName}</span>
       <span class="badge-toxic"><span class="material-symbols-outlined" style="font-size:14px">warning</span> Toxic to pets</span>
     `;
 
@@ -1142,7 +1198,7 @@
         return;
       }
       const data = await response.json();
-      const plant = data.data || {};
+      const plant = data.data || data || {};
       const payload = buildPlantPayload({ ...plant, id: plant.id || id });
       localStorage.setItem('herbarium-selected-plant', JSON.stringify(payload));
       renderPlantProfile(payload);
